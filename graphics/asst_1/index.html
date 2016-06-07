@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Lucas Karahadian  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 1: Rasterizester</h1>
+    <h2 align="middle">Lucas Karahadian</h2>
+
+    <div class="padded">
+        <p>In this, the first assignment of CS184 we look at the art of writing graphics to the screen.  Graphic input will be SVG (scaleable vector graphics), designed as an implicit description of our graphics.  We deal with drawing algorithms for both lines and triangles, and antialiasing for triangles.  We also implement transform matrices that can operate on our SVGs.  Finally, we implement Barycentric coordinate sampling as well as bilinear filtering, nearest-level mipmapping, and trilinear filtering.</p>
+
+    <h2 align="middle">Part 1: Rasterizing Lines</h2>
+        <p>For line drawing, I implemented a variant of <a href="http://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html">Bresenham's Algorithm</a>.  I say a variant because Bresenham's Algorithm is designed to work exlusively on lines drawn from left to right with a slope between 0 and 1.  However, we needed an algorithm to draw any and all lines.  To account for this, I developed a mapping that would allow us to draw a corresponding line in first octant and then map it into the octant it needs to be in.  This octant mapping is determined by the slope of the line, and the direction it is drawn in.</p> <p>A small wrinkle that I ran into was deciding how to deal with vertical lines in terms of deciding which octant they belong in.  The way I got through this was by comparing y-values of endpoints if the line is vertical.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part1.png" width="960px" />
+                    <figcaption align="middle">Fig 1: This test image rasterizes lines in all octants.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 2: Rasterizing single-color triangles</h2>
+        <p>In this part, we look at the rasterizing of triangles defined by a vector of vertices.  The drawing algorithm that I implemented scans the bounding-box of the triangle and rasterizes any points that it finds inside the triangle.  This, of course, raises the question "How do we tell what's inside the triangle?"  The solution lies in the Line Equation defined in lecture.</p>
+        <p align="middle"><pre align="middle">L<sub>i</sub>(x,y) = -(x-X<sub>i</sub>)dY<sub>i</sub> + (y-Y<sub>i</sub>)dX<sub>i</sub></pre></p>
+        <p>If this equation is greater than or equal to zero for all three edges of the triangle, then the point (x,y) lies in the triangle.  However, it is worth noting that this only works if the points are ordered counter-clockwise around the triangle.  However, if the points are in clockwise order, then this condition changes to requiring the line equations to be less than or equal to zero.  So if all the edges report the same side of their line, the point is inside the triangle.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part2.png" width="960px" />
+                    <figcaption align="middle">Fig 2: We can see that this approach to rasterizing triangles can lead to broken triangles if the center of the pixel does not lie inside the triangle.  This will be remedied in the next part.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 3: Antialiasing triangles</h2>
+        <p>Looking at Figure 2, we can see two important effects of aliasing: the triangles have jagged edges, and skinny parts of the triangles are broken.  This can be solved by applying antialiasing procedures while sampling the triangles.  The main procedure we will be using is supersampling followed by a low-pass filter.</p>
+        <p>To implement supersampling, I needed to create a buffer separate from the main framebuffer used in previous parts.  The size of this buffer is the size of the framebuffer times the sampling rate we use.  This is so it can hold all of the subpixel samples that we take during the process of supersampling.  In addition, to avoid antialiasing lines (as my algorithm for drawing lines does not lend itself to antialiasing), I changed my line-drawing function to write a full pixel of samples to my supersampling buffer.  The supersampling method I used was grid-based, where all subpixel samples are taken from the center of grid squares that exist within the pixel.</p>
+        <p>A very interesting bug that I encountered while working on supersampling was dealing with floating point precision and non-terminating decimals.  For a long time, when the sample size was 9 per pixel, where the step size between pixels was 1/3 (a non-terminating decimal in floating point), the precision of floats did not accurately step from one sample to the next.  This error would build up to a seemingly random point on the image where it would skip a sample entirely, causing a white line to appear in the image.  This was eventually fixed by using double-precision floating point numbers to represent the subpixel locations.</p>
+        <p>Before writing to the screen, I need to populate the original framebuffer with blurred samples from the supersampling buffer.  This is done by performing a moving average over the supersampling buffer and piping the results directly to the framebuffer.  Importantly, since the framebuffer is stored as chars, the colors must be averaged in separate floats and cannot be procedurally averaged in the framebuffer.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-1.png" width="960px" />
+                    <figcaption align="middle">Fig 3: 1 Sample per Pixel</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-2.png" width="960px" />
+                    <figcaption align="middle">Fig 4: 4 Samples per Pixel</figcaption>
+                </tr>
+            </table>
+        </div> 
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-3.png" width="960px" />
+                    <figcaption align="middle">Fig 5: 16 Samples per Pixel.  Notice that as we increased sampling rate, the skinny edge of this triangle closed up and smoothed out.</figcaption>
+                </tr>
+            </table>
+        </div>       
+
+    <h2 align="middle">Part 4: Transforms</h2>
+        <p>For this part, I implemented rotation, scale, and translation matrices for use in SVG file creation.  In addition, I implemented changing the view while displaying images, e.g. dragging the graphic or zooming in and out.  This in particular was a bit difficult.  I had to extract current x, y, and span variables from the current view transform and alter them to fit the change I wanted.  An improvement that I made over the spec was to have a normalized translation of the image at different zoom levels.  If you are zoomed out, dragging the image will move it more than if you are zoomed in.  This allows for finer control of what part of the image you are looking at.  This was implemented by scaling dx and dy of the translation by the ratio of the current span to the default span.</p>
+
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4-1.png" width="960px" />
+                    <figcaption align="middle">Fig 6: The following images show the results of my rotation transform applied to deeper subgroups of an SVG.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4-2.png" width="960px" />
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4-3.png" width="960px" />
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4-4.png" width="960px" />
+
+                </tr>
+            </table>
+        </div>
+
+
+    <h2 align="middle">Part 5: Barycentric coordinates</h2>
+        <p>In this section we calculate Barycentric coordinates for sampling within triangles.  Barycentric coordinates (alpha, beta, gamma) represent a change of basis to two sides of the triangle.</p>
+        <p align="middle"><pre align="middle">(x,y) = alpha * A + beta * B + gamma * C</pre></p>
+        <p>where A, B, and C are the coordinates of the vertices of the triangle in question.  Knowing the Barycentric coordinates is useful because it allows us to interpolate between values located at the vertices, such as color or texture values as we will see in the following parts.</p>
+
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5.png" width="960px" />
+                    <figcaption align="middle">Fig 7: This color wheel is created by interpolating between colors defined only at the vertices of its constituant triangles.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 6: Pixel sampling for texture mapping</h2>
+        <p>Now that we have seen how Barycentric coordinates can be used to interpolate between vertex values, we now look at using them to sample a texture file with defined correspondences only at the vertices of the triangle.  Since we have correspondence points between the vertices of the triangle and points on the texture file as well as our (x,y) point represented in the coordinates of the triangle (Barycentric), it is a simple matter to find where the (x,y) point lies in the coordinate frame of the texture file (u,v).</p>
+        <p>Once we have a (u,v) location for a particular pixel, we now have to choose what texel it corresponds to, as this (u,v) will very rarely fall directly on a texel, more likely it will be between a group of them.  One option is to use what is known as "nearest-neighbor" sampling, where we choose to color the pixel with the color of the nearest texel.  While this is by far the simplest option, it does leave magnified textures looking very blocky as seen in Figure 8.</p>
+        <p>An often-times better option for texel sampling is bilinear interpolation.  This is where we linearly interpolate between the four nearest texels to obtain a value in between.  This drastically fixes the "blocky" look that we saw in nearest-neighbor magnification.  It is important to note that this will produce only a slightly better-looking image in textures that have a low spatial frequency.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-1.png" width="960px" />
+                    <figcaption align="middle">Fig 8.  Nearest-neighbor sampling at 1 Sample per pixel.  Notice the blocky artifacting around the eyes.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-2.png" width="960px" />
+                    <figcaption align="middle">Fig 9: Bilinear-interpolation sampling at 1 Sample per pixel.  The blockyness is gone.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-3.png" width="960px" />
+                    <figcaption align="middle">Fig 10: Nearest-neighbor sampling at 16 samples per pixel.  Notice that this procedure also reduced the blockyness.  This is because the bilinear interpolation we use for texture mapping will antialias it when the image is below a threshold frequency.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-4.png" width="960px" />
+                    <figcaption align="middle">Fig 11: Thus using bilinear interpolation does not have as noticeable an effect at this sampling rate.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 7: Level sampling with mipmaps for texture mapping</h2>
+        <p>Now that we have Bilinear texture filtering that fixes magnified textures, we want to look at what we can do about having different magnification levels in a single image.  The most commonly used technique for dealing with multiple magnifications is to use mipmapping.  Mipmapping is the creation of downscaled versions of a texture and sampling from these "mipmaps" instead of the original texture when the texture is called to be shrunk in the image anyway.  This allows for reduced aliasing in small textures while preventing unwanted blur in magnified textures.</p>
+        <p>The way we decide which mipmap to use is determined similarly to how we decided which texel to use.  We have two options, nearest-level sampling and linear interpolation.  Nearest level sampling uses the mipmap that best corresponds to the distortion of the particular pixel we are sampling for.  Linear interpolation creates a new color by interpolating between the color obtained from the two adjacent mipmap levels.  As before, interpolation creates a much smoother transition between mipmaps.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7-1.png" width="960px" />
+                    <figcaption align="middle">Fig 12: Zero-level mipmapping and nearest-neighbor texture filtering.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7-2.png" width="960px" />
+                    <figcaption align="middle">Fig 13: Zero-level mipmapping and Bilinear texture filtering.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7-3.png" width="960px" />
+                    <figcaption align="middle">Fig 14: Nearest-level mipmapping and nearest-neighbor texture filtering.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7-4.png" width="960px" />
+                    <figcaption align="middle">Fig 15: Nearest-level mipmapping and Bilinear texture filtering.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7-5.png" width="960px" />
+                    <figcaption align="middle">Fig 16: Linear mipmapping and nearest-neighbor texture filtering.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7-6.png" width="960px" />
+                    <figcaption align="middle">Fig 17: Full Trilinear Filtering.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+        <p>While this kind of filtering is great for normal textures, for images like the one above, it actually can produce some subpar results in blurring important details such as facial features.</p>
+        <p>A fun bug that I ran into while implementing the linear interpolation between mipmap levels is that I had reversed the interpolation factor.  So as the texture shrank, the blur level from mipmaps would suddenly jump and decrease slowly.</p>
+
+    <h2 align="middle">Part 8: My drawing</h2>
+        <p>Art is not always pretty.  This is an example of that, behold the Super-duper Sierpinski Sayain. </p> 
+        <p>This SVG was created by using the transforms detailed in part 4 to scale and translate groups of triangles to create a few levels of the well known fractal.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part8-1.png" width="960px" />
+                    <figcaption align="middle">A true nightmare.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part8-2.png" width="960px" />
+                    <figcaption align="middle">Zoomed in to show mipmapping.</figcaption>
+                </tr>
+            </table>
+        </div>
+</div>
+</body>
+</html>
+
+
+
+

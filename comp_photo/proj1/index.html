@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Alignment Fun With Sergei Prokudin-Gorskii</title>
+</head>
+<body>
+
+<h1>The Russian Empire: Now in Technicolor!</h1>
+<h4>by Lucas Karahadian</h4>
+<p>In the years 1909-1915 (long before the advent of color photography), Russian photographer Sergei Prokudin-Gorskii set about documenting his homeland using a brand new photography technique which produced three grayscale negatives, one for each RGB color channel.  In the century since these photos were taken, the Library of Congress has reproduced the original images by hand using computer image-editing technology.  While we aren't hoping to recreate exactly the steps taken by the Library of Congress, we want to see how well a computer does when instructed to recreate the images automatically</p>
+<p>The main challenge we are tackling here is that of aligning the three negatives together.  I received the negatives as they were scanned in, in a single vertical strip.  We naively divide the strip into three equal-sized squares to isolate the three negatives and align them from there.  We accomplish this alignment by comparing the L2 Norm of two color channels at a time across different (x,y) offsets.  There are also a number of techniques we use to improve this algorithm: image pyramids, cropping, and edge detection.</p>
+
+<img src="./melons_full.png">
+
+<h2>The General Algorithm</h2>
+<p>The algorithm I use involves creating an image pyramid that scales the images down until they are under 15px on a side.  When they are this small it is easy to search every possible offset combination for the lowest L2 Norm.  After this layer of search, we revisit the scaled up images using the displacement vector from the smaller images as a guide to narrow down our search options until we return to the original-scaled images.  Below are pictured the given example images after this algorithm has been run on them with mouseover text showing the offset vectors in (row, col) form. </p> 
+<p>  To see final results, scroll to the "Edge Detection" section.</p>
+
+<img src="./pyramid_result/result-cathedral.png" title="Green:(1, -1), Red:(7, -1)">
+<img src="./pyramid_result/result-monastery.png" title="Green:(-6, 0), Red:(117, 1)">
+<img src="./pyramid_result/result-nativity.png" title="Green:(-5, 1), Red:(7, 1)">
+<img src="./pyramid_result/result-settlers.png" title="Green:(7, 0), Red:(14, -1)">
+<img src="./pyramid_result/result-tobolsk.png" title="Green:(3, 2), Red:(6, 3)">
+<img src="./pyramid_result/result-bridge.png" title="Green:(13, -7), Red:(68, 4)">
+<img src="./pyramid_result/result-emir.png" title="Green:(-3, 7), Red:(129, 2661)">
+<img src="./pyramid_result/result-harvesters.png" title="Green:(118, -3), Red:(120, 7)">
+<img src="./pyramid_result/result-icon.png" title="Green:(42, 15), Red:(89, 22)">
+<img src="./pyramid_result/result-lady.png" title="Green:(57, -6), Red:(123, -17)">
+<img src="./pyramid_result/result-melons.png" title="Green:(83, 4), Red:(176, 7)">
+<img src="./pyramid_result/result-onion_church.png" title="Green:(52, 22), Red:(107, 1)">
+<img src="./pyramid_result/result-self_portrait.png" title="Green:(50, -2), Red:(131, -5)">
+<img src="./pyramid_result/result-three_generations.png" title="Green:(52, 5), Red:(108, 7)">
+<img src="./pyramid_result/result-train.png" title="Green:(0, -6), Red:(107, 1)">
+<img src="./pyramid_result/result-turkmen.png" title="Green:(57, 4), Red:(81, 0)">
+<img src="./pyramid_result/result-village.png" title="Green:(18, -7), Red:(281, -14)">
+<img src="./pyramid_result/result-workshop.png" title="Green:(53, -5), Red:(69, -16)">
+
+<h2>Cropping</h2>
+<p>For many of the supplied images, the borders are hugely problematic when calculating the L2 Norm, so we can improve this alignment by cropping off at least part of the borders.  This is accomplished through using Matlab's edge function and cropping the images until there is non-zero content on the borders of the picture.  While this may (and in many cases does) leave some junk on the borders, in most cases it improves the alignment immensely.</p>
+
+<!-- <img src="./cropped_result/result-cathedral.png" title="Green:(0, 1), Red:(8, 1)">
+<img src="./cropped_result/result-monastery.png" title="Green:(-8, 7), Red:(-5, 0)">
+<img src="./cropped_result/result-nativity.png" title="Green:(-2, 1), Red:(2, 0)">
+<img src="./cropped_result/result-settlers.png" title="Green:(-4, 0), Red:(4, 2)">
+<img src="./cropped_result/result-tobolsk.png" title="Green:(-1, 1), Red:(2, 0)">
+<img src="./cropped_result/result-bridge.png" title="Green:(-116, 1), Red:(3032, -39)">
+<img src="./cropped_result/result-emir.png" title="Green:(-46, 50), Red:(14, 2215)">
+<img src="./cropped_result/result-harvesters.png" title="Green:(-27, 33), Red:(77, 12)">
+<img src="./cropped_result/result-icon.png" title="Green:(-6, 41), Red:(42, 49)">
+<img src="./cropped_result/result-lady.png" title="Green:(-19, 20), Red:(9, 23)">
+<img src="./cropped_result/result-melons.png" title="Green:(-40, 20), Red:(55, 18)">
+<img src="./cropped_result/result-onion_church.png" title="Green:(-68, 32), Red:(-12, 44)">
+<img src="./cropped_result/result-self_portrait.png" title="Green:(-49, 59), Red:(48, 69)">
+<img src="./cropped_result/result-three_generations.png" title="Green:(-48, 29), Red:(14, 24)">
+<img src="./cropped_result/result-train.png" title="Green:(1, -1), Red:(52, 3)">
+<img src="./cropped_result/result-turkmen.png" title="Green:(-30, 38), Red:(29, 44)">
+<img src="./cropped_result/result-village.png" title="Green:(95, 26), Red:(113, 56)">
+<img src="./cropped_result/result-workshop.png" title="Green:(-18, 37), Red:(0, 25)"> -->
+
+
+<h2>Edge Detection</h2>
+<p>I used edge detection to determine how much to crop off before, and for some problematic images, I also used it to calculate the L2 Norm.  This allows us to get around the natural differences between intensities on different channels and compare overall shapes instead.  Unfortunately, this approach did not solve all my alignment problems, and some of the images still remain unaligned due to random complexity in the edge profiles.</p>
+
+<img src="./edge_result/result-cathedral.png" title="Green:(1, 1), Red:(8, 3)">
+<img src="./edge_result/result-monastery.png" title="Green:(-8, 7), Red:(-5, 1)">
+<img src="./edge_result/result-nativity.png" title="Green:(-2, 1), Red:(2, -1)">
+<img src="./edge_result/result-settlers.png" title="Green:(-4, 0), Red:(3, -2)">
+<img src="./edge_result/result-tobolsk.png" title="Green:(-1, 1), Red:(2, 0)">
+<img src="./edge_result/result-bridge.png" title="Green:(-117, 3), Red:(3033, -38)">
+<img src="./edge_result/result-emir.png" title="Green:(-47, 49), Red:(13, 2251)">
+<img src="./edge_result/result-harvesters.png" title="Green:(-27, 35), Red:(78, 12)">
+<img src="./edge_result/result-icon.png" title="Green:(-7, 41), Red:(42, 48)">
+<img src="./edge_result/result-lady.png" title="Green:(-20, 19), Red:(11, 23)">
+<img src="./edge_result/result-melons.png" title="Green:(-39, 21), Red:(55, 19)">
+<img src="./edge_result/result-onion_church.png" title="Green:(-68, 31), Red:(-13, 43)">
+<img src="./edge_result/result-self_portrait.png" title="Green:(-51, 59), Red:(47, 71)">
+<img src="./edge_result/result-three_generations.png" title="Green:(-49, 27), Red:(14, 24)">
+<img src="./edge_result/result-train.png" title="Green:(1, -1), Red:(53, 1)">
+<img src="./edge_result/result-turkmen.png" title="Green:(-31, 37), Red:(27, 43)">
+<img src="./edge_result/result-village.png" title="Green:(94, 26), Red:(113, 55)">
+<img src="./edge_result/result-workshop.png" title="Green:(-19, 37), Red:(-1, 26)">
+
+<h2>Observations About Misaligned Images</h2>
+
+<p>It is worth noticing that the edge-detecting algorithm did a worse job at aligning "Bridge.tif" and "lady.tif" images.  This is because the large spots of damage occuring on the edges of the images that my cropping did not get rid of.  These areas of damage create a large difference in the edge profiles of the channels, causing the program to not find the exact alignment.  Two other images of note that didn't align properly are "Emir.tif" and "village.tif".  In Emir, it is clear that the green channel aligned properly over the blue, but the red is off.  This is due to a lack of contrast in the background of the red channel which is present in both the green and blue channels.  In the village, the alignment is off particularly in the green channel because of the amount of contrast it contains in the greenery.  In both of these cases, higher contrast shows up very strongly in the edge profile, so if one channel has more contrast than another, even if they are aligned properly, they will show a significant difference when taking the L2 Norm of the edge profile. </p>
+
+
+<h2>Final Examples</h2>
+<img src="./edge_result/result-00137u.png" title="Green:(-41, 21), Red:(0, 2)">
+<img src="./edge_result/result-00871u.png" title="Green:(-33, 34), Red:(-15, 40)">
+<img src="./edge_result/result-00938u.png" title="Green:(-26, 44), Red:(2, 61)">
+<img src="./edge_result/result-00992u.png" title="Green:(2, 50), Red:(19, 28)">
+<img src="./edge_result/result-01085u.png" title="Green:(-51, 39), Red:(15, 55)">
+
+</body>
+</html>

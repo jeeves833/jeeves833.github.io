@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Lucas Karahadian  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 2: GeoMenagerie</h1>
+    <h2 align="middle">Lucas Karahadian</h2>
+
+    <div class="padded">
+        <p>In this project we look at representations of geometry in computer graphics.  In particular we look at triangular meshes, which can represent any 2D surface embedded in 3D space.  We examine Bezier Tesselation and Loop Subdivision and cap off with a bit of Shader Design and 3D Modeling.</p>
+
+    <h2 align="middle">Part 1: Fun with Bezier Patches</h2>
+        <p>Bezier Surfaces are a class of surfaces defined by their relation to a series of off-surface control points.  To represent complex surfaces, we tend to divide them into smaller bicubic Bezier Patches, which are defined by 16 control points each.  In this part we take the definition of Bezier Surfaces and create triangular meshes out of them by sampling on an 8x8 grid to form 128 triangles per patch.  Implementation wise, I used the recursive 2D DeCasteljau algorithm, a subdivision process that produces Bezier surfaces of a lower order as an intermediate step to sampling the point we want.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part1.png" />
+                    <figcaption align="middle">The results of my Bezier Tesselation applied to the canonical Utah Teapot</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 2: Average Normals for Half-Edge Meshes</h2>
+        <p>Graphics is all about making things that look nice, so lets turn on the shaders for our triangular mesh.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part2a.png" />
+                    <figcaption align="middle">Default Mesh with Face Normals</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>Ew.  As you can see, there are clear boundaries on the edges of the faces.  This is because we are sampling the color for the whole face at once in its center.  This problem can be remedied using a technique we saw in the previous assignment, Barycentric Interpolation.  The only catch is that because the colors of the face are not constant, we can't just interpolate between a color at each vertex.  The solution here is to interpolate between surface normal vectors defined at each vertex.  This way we can approximate the lighting of a much more rounded object without enhancing the physical geometry.  "But wait!" you may be asking.  "A normal on a vertex? How does that make sense?"  In truth there isn't much of a geometric sense behind a normal from a singularity, so we define the normal of a vertex to be the average of all its adjacent face normals.  The results are below.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part2b.png" />
+                    <figcaption align="middle">Default Mesh with Vertex Normals</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>As you can see this looks much better.  It is important to note that although the surface looks smooth, it is still physically made up of coarse faces.  We will look at smoothing it out in the following parts.</p>
+    <h2 align="middle">Part 3: Edge Flip</h2>
+        <p>We now begin our descent into a topic known as Loop Subdivision.  This will eventually culminate in the geometric smoothing of a mesh, but first we need to develop some important techniques.  The first of these is edge flipping, shown below.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3a.jpg" />
+                    <figcaption align="middle">Flipping edge BC into AD</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>At a high level, edge flipping is very easy to understand, but to talk about its implementation we first need to mention the half-edge data structure.</p>
+        <p>Our triangular mesh is represented by the half-edge data structure, which creates as a skeleton for the mesh a collection of half-edges.  A half-edge is a vector along one side of an edge that is defined by the face it touches, the edge it is a part of, and the vertex at its origin.  It contains reference to the half-edge sharing the same edge and the next half-edge along the face as well as all its defining parts.  In addition, for this structure, all vertices, edges, and faces contain a reference to one of their half-edges.  Thus to change parts of a mesh, all one has to do is reassign pointers within the relevant mesh objects.  However, this can turn into a lot of reassignment and the biggest pitfall of implementing this and the following operation tends to be keeping track of pointers and not forgetting to change them.  In my journey to implement them, I tended to forget to create associations to the half-edges from each of the vertices, edges, and faces.  So while the half-edges had all their pointers in the right place, all of their defining mesh features had no references.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3b.jpg" />
+                    <figcaption align="middle">The half-edge data structure</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3c.png" />
+                    <figcaption align="middle">Mesh before flipping edges</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3d.png" />
+                    <figcaption align="middle">Mesh after flipping some edges</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middle">Part 4: Edge Split</h2>
+        <p>The second important build-up operation we need is the ability to split edges.  Implementation wise this ends up very similar to the edge flipping operation.  The only significant difference is that we need to initialize new mesh elements to account for the new vertex and edges.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4a.jpg" />
+                    <figcaption align="middle">Edge Splitting</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3c.png" />
+                    <figcaption align="middle">Mesh before splitting</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4b.png" />
+                    <figcaption align="middle">Mesh after splitting some edges</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middle">Part 5: Upsampling via Loop Subdivision</h2>
+        <p>Now that we have implemented both edge flipping and splitting we can finish Loop Subdivision.  This technique revolves around treating the current surface as a "control cage" that approximates a smoother surface.  To find this smoother surface, we first perform a 4-1 subdivision on each triangle in the mesh, shown below.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5a.jpg" />
+                    <figcaption align="middle">4-1 Subdivision</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>Then we update the positions of the vertexes (both old and new) as a weighted sum of the surrounding vertices from the original mesh.  Repeating this process brings us to a smoothed approximation of our original mesh.  The strategy I used to get a perfect 4-1 subdivision was to split every old edge, and then flip the new edges that connect a new and old vertex.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5b.png" />
+                    <figcaption align="middle">A Cube</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5c.png" />
+                    <figcaption align="middle">After one iteration of Loop Subdivision</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5d.png" />
+                    <figcaption align="middle">After two iterations of Loop Subdivision</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>Notice that while the cube got dramatically smoother after subdivision, it lost most of its cube-ness.  No more sharp corners or edges.  This can be a problem, but we can get around it by observing that Loop Subdivision has smaller effect on more densely faceted sections of the mesh.  By pre-splitting areas around corners, we can keep the cube looking cubelike.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5e.png" />
+                    <figcaption align="middle">The pre-splitting pattern we use to try and maintain the top edge</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5f.png" />
+                    <figcaption align="middle">Prior to subdividing</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5g.png" />
+                    <figcaption align="middle">After 3 iterations of subdivision</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>Notice that the edge is far more pronounced than the others after this pattern of pre-processing.  A similar splitting pattern could be applied to the other edges as well to keep the cube shape intact after subdividing.</p>
+        <p>Another effect of upsampling the original cube is a loss of symmetry due to how the cube was originally tesselated in a non-symmetric way.  By splitting the faces to all be symmetric we can achieve a more symmetric upsampling.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5h.png" />
+                    <figcaption align="middle">A more symmetric tesselation</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5i.png" />
+                    <figcaption align="middle">Leads to a more symmetric subdivision</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middl">Part 6: Fun with Shaders</h2>
+        <p>Now that we have the physical geometry down, it's time to make some shaders!  The first shader I implemented is what is known as Phong Shading.  This shader combines ambient lighting, diffuse light from a source, and specular highlights.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6a.png" />
+                    <figcaption align="middle">Phong Shading</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>Ambient light is represented as a constant color applied to the whole mesh.  Diffuse lighting is calculated proportionally to the dot product of the surface normal and the incoming light vector.  Specular highlights depend on the viewing angle and are calculated as reflected light.  Notice the brown ambient lighting and the green diffuse light.  These colors were chosen deliberately to evoke the feel of the original Legend of Zelda video games, for reasons that will be made clear later.</p>
+        <p>The second shader that I designed indexes into an environment map at a location determined by the reflection of the viewing angle around the surface norm.  This makes the mesh appear mirror-like, reflecting the environment picture.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6b.png" />
+                    <figcaption align="middle">Enviroment Map Shading</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middle">Part 7: Design your own Mesh!</h2>
+        <p>For the end of this project, I learned how to use Blender, a free 3D modeling program, and let my imagination go wild.  So behold!</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7c.png" />
+                    <figcaption align="middle">Link the Hero of Time himself!</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>Making this model was a lot of fun.  I am particularly proud of the way the ends of the bow turned out.  However, behind this model is a true horror story of debugging.  For an entire day, this mesh did not load into the meshedit program.  It threw an error saying that there was a polygon that had nondistinct vertices, and then gave three indices of those vertices (49, 0, 0).  I had no idea what to do.  My first step was to figure out which vertices 49 and 0 were.  After some searching online, I found how to display vertex indices.  Lo and behold, I found vertices 49 and 0...and they were nowhere near each other.  There is no way there is a polygon connecting these.  After another lengthy period of testing, I determined that the problem persisted even if I deleted my mesh and replaced it with a cube.  Despite this, making a new blender file worked fine in meshedit.  This was clearly a problem somewhere in the Blender settings of that file and not an issue with my mesh itself.  I decided to open up and examine the exported .dae.  After taking the time to learn the formatting, I found the vertex list for polygons compared it to a properly loading file.  I noticed that in the erroring file, this array had a color attribute attached to it that the correct file didn't have.  This means that the parser was unable to parse .dae files that have vertex colors.  Because I didn't want to remake my entire mesh in a different file, I decided to delve into the parsing file.  After a three-line-ish edit to the parsing file, I had a new parser that would correctly open my mesh.  And there was much rejoicing.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7d.png" />
+                    <figcaption align="middle">Angled from above</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7e.png" />
+                    <figcaption align="middle">After one iteration of subdivision</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7f.png" />
+                    <figcaption align="middle">After two iterations of subdivision</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7a.png" />
+                    <figcaption align="middle">With the custom shader I made earlier.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7b.png" />
+                    <figcaption align="middle">HYAAAA</figcaption>
+                </tr>
+            </table>
+        </div>
+</div>
+</body>
+</html>
+
+
+
+

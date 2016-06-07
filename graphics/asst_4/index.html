@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Lucas Karahadian  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 4: Len Simulator</h1>
+    <h2 align="middle">Lucas Karahadian</h2>
+
+    <h2 align="middle">Part 1: Tracing Rays through Lenses</h2>
+        <p>In the previous assignment, we intersected rays using a pinhole camera model.  To give us more control of the images we create, we can simulate lens systems between our generated rays and the scene.  This allows us to change the field of view without altering the size of the sensor as well as zoom in on images without moving the camera.  In addition, we can simulate depth of field with lenses, adding realistic focus variations with the depth of the scene.  For this project, we are using four different lens configurations.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/lens1demo.png" width="480px" />
+                    <figcaption align="middle">D-GAUSS F/2 22deg HFOV</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/lens2demo.png" width="480px" />
+                    <figcaption align="middle">Wide-angle (38-degree) lens. Nakamura.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/lens3demo.png" width="480px" />
+                    <figcaption align="middle">SIGLER Super achromate telephoto, EFL=254mm, F/5.6"</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/lens4demo.png" width="480px" />
+                    <figcaption align="middle">Muller 16mm/f4 155.9FOV fisheye lens</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>The above images show pairs of conjugate points for each lens i.e. where rays cast from a point converge on the other side of the lens.  In the case of the telephoto lens, this convergence point is actually far off past the left side of the image because of how the lens is focused.</p>
+        <div align="center">
+            <table border="1">
+                <th>Lens Name</th>
+                <th>Infinity Focus Sensor Distance (mm)</th>
+                <th>Close focus Sensor Distance (mm)</th>
+                <tr>
+                    <td>D-GAUSS F/2 22deg HFOV</td>
+                    <td>51.2545</td>
+                    <td>63.4623</td>
+                </tr>
+                <tr>
+                    <td>Wide-angle (38-degree) lens. Nakamura.</td>
+                    <td>28.7423</td>
+                    <td>34.4877</td>
+                </tr>
+                <tr>
+                    <td>SIGLER Super achromate telephoto, EFL=254mm, F/5.6"</td>
+                    <td>188.692</td>
+                    <td>258.185</td>
+                </tr>
+                <tr>
+                    <td>Muller 16mm/f4 155.9FOV fisheye lens</td>
+                    <td>28.6069</td>
+                    <td>63.4623</td>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/focus_depth.png" width="480px" />
+                    <figcaption align="middle"></figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/coil.png" width="480px" />
+                    <figcaption align="middle">Demonstrating the defocus blur achieved by using the fisheye lens.  Notice that the focus plane lies on the ceiling near the light source and the rest of the image is blurry.</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middle">Part 2: Contrast-based Autofocus</h2>
+        <p>Currently in our lens system, we can adjust the focus by manually moving the sensor plane back and forth in relation to the lenses.  But this takes a lot of effort.  We want to design a system to do this focusing automatically.</p>
+        <p>To this end, I define the focus metric for a small image patch as the maximum variance of its three color channels (red, green, and blue).  A lower metric corresponds to a less focused image, because when the patch is not focused, the pixels all are grouped around the mean, while when the patch focuses, the pixels separate (if the patch contains more than a flat uniform surface).</p>
+        <p>In order to search for the point of best focus, I start the sensor plane at the infinity focus point (the one closest to the lens) and sweep it to the close-focus point.  I take note of the focus metric at points along the way and save the largest one.  This process can be sped up by noticing that once you've passed the most in focus sensor distance, the focus metric will only decline.  So, once the measurements are consistently decreasing, you know that any future measurements are unnecessary, and you can stop the search there.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_back_focus.png" width="480px" />
+                    <figcaption align="middle">The result of autofocusing on a small patch on the back left corner.  Notice that the back left seam is very clear, while the boundary of the front right sphere is blurred.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/focus_plot.png" width="480px" />
+                    <figcaption align="middle">Focus measurements taken in the above autofocus routine.  The heavy spiking observed shows that the max-variance metric is not as robust as I would like it to be, but it serves its purposes.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>It turned out that this focus metric did a pretty poor job of measuring the focus, so I switched to the sum of the variance of the three channels.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/focus_plot2.png" width="480px" />
+                    <figcaption align="middle">The focus measures of the more robust metric.</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middle">Highlights of each lens</h2>
+    <p>These all use the glass ball cornell box from the previous assignment.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_lens1.png" width="480px" />
+                    <figcaption align="middle">D-GAUSS F/2 22deg HFOV: Zoomed in on the mirror ball with focus on the opening in the box.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_lenswide2.png" width="480px" />
+                    <figcaption align="middle">Wide-angle (38-degree) lens. Nakamura.  A much smaller amount of light makes it through this lens, so the scene appears darker.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_lens2.png" width="480px" />
+                    <figcaption align="middle">SIGLER Super achromate telephoto, EFL=254mm, F/5.6": The telephoto lens has a tiny FOV, so we can take pictures with very flat perspective.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_lens4.png" width="480px" />
+                    <figcaption align="middle">Muller 16mm/f4 155.9FOV fisheye lens: Conversely, the fisheye lens has a huge FOV, so we get these circularly distorted pictures.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+</div>
+</body>
+</html>
+
+
+
+

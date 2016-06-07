@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lucas Karahadian</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+    <div class="centered">
+        <h1>Project 3: Fun with Frequencies!</h1>
+        <h4 style="text-align: center;"> By Lucas Karahadian </h4>
+
+        <h2> Warmup (Image Sharpening) </h2>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/originalSpeed.jpg"><img src="pics/originalSpeed.jpg" ></a>
+        		<h3>The picture I sharpened.</h3>
+        	</li>
+        	<li>
+        		<a href="pics/sharpSpeed.jpg"><img src="pics/sharpSpeed.jpg" ></a>
+        		<h3>Even Speedwagon is sharper!</h3>
+        	</li>
+        </ul>
+
+        <h2>Hybrid Images</h2>
+        <h3>Favorite Image</h3>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/clinton-3.jpg"><img src="pics/clinton-3.jpg" ></a>
+        		<h3>Hillary Clinton</h3>
+        	</li>
+        	<li>
+        		<a href="pics/clintonFiltered.jpg"><img src="pics/clintonFiltered.jpg" ></a>
+        		<h3>Clinton post alignment-and-filtering</h3>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/Donald-Trump.jpg"><img src="pics/Donald-Trump.jpg" ></a>
+        		<h3>Donald Trump</h3>
+        	</li>
+        	<li>
+        		<a href="pics/trumpFiltered.jpg"><img src="pics/trumpFiltered.jpg"></a>
+        		<h3>Trump post alignment-and-filtering</h3>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/clintonFT.jpg"><img src="pics/clintonFT.jpg"></a>
+        		<h3>The FFT of the filtered Clinton image</h3>
+        	</li>
+        	<li>
+        		<a href="pics/trumpFT.jpg"><img src="pics/trumpFT.jpg"></a>
+        		<h3>The FFT of the filtered Trump image</h3>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/HillaryTrump.jpg"><img src="pics/HillaryTrump.jpg"></a>
+        		<h3>The beautiful Hillary Trump</h3>
+        	</li>
+        	<li>
+        		<a href="pics/combinedFT.jpg"><img src="pics/combinedFT.jpg"></a>
+        		<h3>The FFT of our Glorious Leader.</h3>
+        	</li>
+        </ul>
+        <p> This hybrid image is created by first taking a low-pass filter of Trump image and a high-pass filter of the Clinton image, then superimposing these two.  When we see images close up, our eyes notice more high frequency images and Clinton appears.  However, when we are far away from the image, our eyes do not notice the high frequency components of the image and we see Trump.  Notice the distinct lines in the FFT for Clinton and the combined image.  This is due to the alignment process creating a box around the image.  It is also worth noting that I decided on good cutoff frequencies by taking off my glasses rather than viewing from a distance, so you may need to stand far back from the screen to see the low-frequency band.</p>
+
+        <h3>Other Hybrid Images</h3>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/SuperstarSaga.jpg"><img src="pics/SuperstarSaga.jpg"></a>
+     			<h3>Mario and Luigi</h3>
+        	</li>
+        </ul>
+        <p>The difficulty in getting this picture to work was figuring out an alignment point.  The difference in facial structures and head sizes means that aligning based on the eyes or positions on the outside of the head does not work.  What I ended up doing was aligning based on the position of the nose, a prominent feature on the face of both Mario Bros.</p>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/JoshGarcia.jpg"><img src="pics/JoshGarcia.jpg"></a>
+        		<h3>Professor Josh Garcia</h3>
+        	</li>
+        </ul>
+        <p>This was my attempt at a hybrid image between Dan Garcia and Josh Hug.  Unfortunately due to the differences in shape of head and direction of faces, the hybrid did not turn out very well and no alignment tricks that I could think of would save it.</p>
+        <h2>Gaussian and Laplacian Stacks</h2>
+        <h3>A Day at the Beach (Click on images for more detail)</h3>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/beachG1.jpg"><img src="pics/beachG1.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/beachL1.jpg"><img src="pics/beachL1.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/beachG2.jpg"><img src="pics/beachG2.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/beachL2.jpg"><img src="pics/beachL2.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/beachG3.jpg"><img src="pics/beachG3.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/beachL3.jpg"><img src="pics/beachL3.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/beachG4.jpg"><img src="pics/beachG4.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/beachL4.jpg"><img src="pics/beachL4.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/beachG5.jpg"><img src="pics/beachG5.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/beachL5.jpg"><img src="pics/beachL5.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/beachG6.jpg"><img src="pics/beachG6.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/beachL6.jpg"><img src="pics/beachL6.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/beachG7.jpg"><img src="pics/beachG7.jpg"></a>
+        	</li>
+        </ul>
+        <h3>Nautilus: FFXIII</h3>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/nautilusG1.jpg"><img src="pics/nautilusG1.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/nautilusL1.jpg"><img src="pics/nautilusL1.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/nautilusG2.jpg"><img src="pics/nautilusG2.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/nautilusL2.jpg"><img src="pics/nautilusL2.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/nautilusG3.jpg"><img src="pics/nautilusG3.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/nautilusL3.jpg"><img src="pics/nautilusL3.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/nautilusG4.jpg"><img src="pics/nautilusG4.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/nautilusL4.jpg"><img src="pics/nautilusL4.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/nautilusG5.jpg"><img src="pics/nautilusG5.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/nautilusL5.jpg"><img src="pics/nautilusL5.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/nautilusG6.jpg"><img src="pics/nautilusG6.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/nautilusL6.jpg"><img src="pics/nautilusL6.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/nautilusG7.jpg"><img src="pics/nautilusG7.jpg"></a>
+        	</li>
+        </ul>
+        <h3>Hillary Trump 2: The Revengening</h3>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/hilG1.jpg"><img src="pics/hilG1.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/hilL1.jpg"><img src="pics/hilL1.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/hilG2.jpg"><img src="pics/hilG2.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/hilL2.jpg"><img src="pics/hilL2.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/hilG3.jpg"><img src="pics/hilG3.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/hilL3.jpg"><img src="pics/hilL3.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/hilG4.jpg"><img src="pics/hilG4.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/hilL4.jpg"><img src="pics/hilL4.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/hilG5.jpg"><img src="pics/hilG5.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/hilL5.jpg"><img src="pics/hilL5.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/hilG6.jpg"><img src="pics/hilG6.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/hilL6.jpg"><img src="pics/hilL6.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/hilG7.jpg"><img src="pics/hilG7.jpg"></a>
+        	</li>
+        </ul>
+        <h2>Multiresolution Blending</h2>
+        <h3>Favorite Result</h3>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/moonParty.jpg"><img src="pics/moonParty.jpg"></a>
+        		<h3>In honor of the Lunar Eclipse last night.</h3>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/normalMoon.jpg"><img src="pics/normalMoon.jpg"></a>
+        		<h3>A normal full moon</h3>
+        	</li>
+        	<li>
+        		<a href="pics/bloodMoon.jpg"><img src="pics/bloodMoon.jpg"></a>
+        		<h3>A so-called "blood moon".  Spooky!</h3>
+        	</li>
+        </ul>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/moonLap1.jpg"><img src="pics/moonLap1.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/normalMoonLap1.jpg"><img src="pics/normalMoonLap1.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/bloodMoonLap1.jpg"><img src="pics/bloodMoonLap1.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/moonLap2.jpg"><img src="pics/moonLap2.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/normalMoonLap2.jpg"><img src="pics/normalMoonLap2.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/bloodMoonLap2.jpg"><img src="pics/bloodMoonLap2.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/moonLap3.jpg"><img src="pics/moonLap3.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/normalMoonLap3.jpg"><img src="pics/normalMoonLap3.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/bloodMoonLap3.jpg"><img src="pics/bloodMoonLap3.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/moonLap4.jpg"><img src="pics/moonLap4.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/normalMoonLap4.jpg"><img src="pics/normalMoonLap4.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/bloodMoonLap4.jpg"><img src="pics/bloodMoonLap4.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/moonLap5.jpg"><img src="pics/moonLap5.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/normalMoonLap5.jpg"><img src="pics/normalMoonLap5.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/bloodMoonLap5.jpg"><img src="pics/bloodMoonLap5.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/moonLap6.jpg"><img src="pics/moonLap6.jpg"></a>
+        	</li>
+        </ul>
+        <ul class="rig columns-2">
+        	<li>
+        		<a href="pics/normalMoonLap6.jpg"><img src="pics/normalMoonLap6.jpg"></a>
+        	</li>
+        	<li>
+        		<a href="pics/bloodMoonLap6.jpg"><img src="pics/bloodMoonLap6.jpg"></a>
+        	</li>
+        </ul>
+        <p>Multiresolution blending works by feathering at different amounts across frequency bands.  This is done because if the feathering is too low the edge between pictures looks too sharp, and if it is too large high frequency components stand out too much.  By increasing the magnitude of feathering as we go deeper in the Laplacian stack, we can ensure that we are blurring the seam as much as we can without letting high frequency components through.</p>
+        <h3>Other Results</h3>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/StevenSpline.jpg"><img src="pics/StevenSpline.jpg"></a>
+        		<h3>A friend of mine and his ASCII art doppelganger.</h3>
+        	</li>
+        </ul>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/CantSeeColor.jpg"><img src="pics/CantSeeColor.jpg"></a>
+        		<h3> I have no face and I must scream.</h3>
+        	</li>
+        </ul>
+        <p>For some inexplicable reason, I felt the need to put a face from one of King Crimson's album covers onto the walls of the Cory HKN office.  This uses a nontrivial mask around the mouth of the face.</p>
+        <ul class="rig columns-1">
+        	<li>
+        		<a href="pics/ohGodwhy.jpg"><img src="pics/ohGodwhy.jpg"></a>
+        		<h3>All 13 CS10 TAs combined into one monstrosity.</h3>
+        	</li>
+        </ul>
+        <p>As you can see, this image did not work out at all.  This is largely because I did not spend the time aligning the images before blending them together.  I may revisit it at a future date to try and make a proper blending here.  It is interesting to note that the masking regions that made this image are radial from the center of the image--in exact 1/13 angle partitions.</p>
+        <h3>Bells and Whistles</h3>
+        <p>You may have noticed that these blends have been in color.  That is because instead of converting the images to grayscale in MATLAB, I ran blending on the red, green, and blue channels separately and then combined them at the end.</p>
+        <h2>Looking Back</h2>
+        <p>By far the coolest part of this project to learn was the algorithm for multiresolution blending.  It's so interesting to see a compromise like that in the frequency domain, especially in images.  I am used to seeing work like this done with audio and it had never occurred to me that similar procedures could be done with images.</p>
+
+        <h4>Acknowledgements:</h4>
+        <p>Website template borrowed from Daniel Tyrrell</p>
+    </div>
+</body>
+</html>

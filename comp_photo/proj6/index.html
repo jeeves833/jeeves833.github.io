@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lucas Karahadian</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+    <div class="centered">
+        <h1>Project 6: Lightfield Camera</h1>
+        <h4 style="text-align: center;"> By Lucas Karahadian </h4>
+        <h2>Overview:</h2>
+        <p>In this project, we examine the possiblities of using a lightfield camera, that is, a camera that captures many images of the same scene from slightly different perspectives.  This capture method gives us information about both the color and angle of light rays in the scene we are capturing, allowing us to recombine and reconstruct varients of the scene in question.  A subset of the lightfield used in this project is displayed below.</p>
+        <ul class= "rig columns-3">
+            <li>
+                <a href="pics/topLeft.png"><img src="pics/topLeft.png"></a>
+            </li>
+            <li>
+                <a href="pics/top.png"><img src="pics/top.png"></a>
+            </li>
+            <li>
+                <a href="pics/topRight.png"><img src="pics/topRight.png"></a>
+            </li>
+        </ul>
+        <ul class= "rig columns-3">
+            <li>
+                <a href="pics/left.png"><img src="pics/left.png"></a>
+            </li>
+            <li>
+                <a href="pics/center.png"><img src="pics/center.png"></a>
+            </li>
+            <li>
+                <a href="pics/right.png"><img src="pics/right.png"></a>
+            </li>
+        </ul>
+        <ul class= "rig columns-3">
+            <li>
+                <a href="pics/bottomLeft.png"><img src="pics/bottomLeft.png"></a>
+            </li>
+            <li>
+                <a href="pics/bottom.png"><img src="pics/bottom.png"></a>
+            </li>
+            <li>
+                <a href="pics/bottomRight.png"><img src="pics/bottomRight.png"></a>
+            </li>
+        </ul>
+        <p>You'll notice that each row has a different vertical perspective, and each column has a different horizontal perspective.  The lightfield can thus be represented as a grid of camera angles.  This is the defining feature of lightfield images and allows us to do some interesting things.</p>
+        <h2>Depth Refocusing</h2>
+        <p>First up of these interesting things is digital depth refocusing.  This is the process of taking a collection of lightfield images and reproducing the same scene but with a very shallow depth of field and a variable focus depth.  To begin, we notice that simply by averaging over the full lightfield grid, we can limit the depth of field to a focus point determined during the creation of the lightfield.</p>
+        <ul class="rig columns-1">
+            <li>
+                <a href="pics/legoF0.jpg"><img src="pics/legoF0.jpg"></a>
+                <h3>The default focus distance created by averaging the full lightfield</h3>
+            </li>
+        </ul>
+        <p>We can change the focus depth by shifting the images depending on how far displaced from the center of the grid they are.</p>
+        <ul class = "rig columns-1">
+            <li>
+                <a href="pics/legoFight61.gif"><img src="pics/legoFight61.gif"></a>
+                <h3>Shifting 1 pixel per image -> Shifting 6 pixels per image</h3>
+            </li>
+        </ul>
+        <p>You'll notice that the focus point moves further back in the image as I increase the amount the images are shifted.</p>
+        <h2>Aperture Adjustment</h2>
+        <p>In the same vein as the digital focusing, we can also readjust our aperture size in post-production.  This involves largely the same process as the focusing process detailed above (shifting lightfield images), but is parameterized over how many images from the lightfield we actually use.  A larger aperture corresponds to using more images, and a smaller aperture can be achieved by averaging over fewer images.  The subset of images we use for this process are always the closest ones to the center of the lightfield grid.</p>
+        <ul class = "rig columns-1">
+            <li>
+                <a href="pics/legoFight04.gif"><img src="pics/legoFight04.gif"></a>
+                <h3>Decreasing the Aperture size from the default</h3>
+            </li>
+        </ul>
+        <h4>Acknowledgements:</h4>
+        <p>Website template borrowed from Daniel Tyrrell</p>
+    </div>
+</body>
+</html>

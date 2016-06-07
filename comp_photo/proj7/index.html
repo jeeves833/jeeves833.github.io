@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lucas Karahadian</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+    <div class="centered">
+        <h1>Project 7: Image Warping and Mosaicing + Feature Matching for Autostitching</h1>
+        <h4 style="text-align: center;"> By Lucas Karahadian </h4>
+        <h2>Overview:</h2>
+        <p>In this project, we examine the potential for panoramic stitching via projective warping.  The idea here is that we can project two pictures taken from the same center of projection onto a plane and blend them together to produce a single image with a higher field of view than either of the two original pictures.</p>
+        <h2>Taking Pictures</h2>
+        <p>The first step in this project is to take a series of pictures by rotating the camera alone.  This steadies the center of projection and guarantees we won't get any artifacts when we project them onto the same plane.  In the following pictures, I tried to steady myself when taking the pictures as much as possible, but there is really only so much you can do with a phone camera.  This does cause minimal artifacting on some of the mosaics, but it does not detract from the overall effect.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/city1Left.jpg"><img src="pics/city1Left.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/city1Right.jpg"><img src="pics/city1Right.jpg"></a>
+            </li>
+            
+        </ul>
+        <ul class= "rig columns-1">
+            <li><h3>Outside of the Montgomery St. Bart Station in San Francisco.</h3>
+                <h4>Click on pictures to view full.</h4></li>
+        </ul>
+        <p>Note that all of the pictures I took in San Francisco are in 2-photo pairs and so result in slightly "off" looking mosaics.  At the end of this page, I will demonstrate a 3-photo mosaic, and the procedure can be extended from there.</p>
+        <h2>Manual Control Point Selection</h2>
+        <p>Step two is to identify points of correspondence between the two pictures.  This is easily done with MATLAB's cpselect(im1, im2) function.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/city1Leftpoints.jpg"><img src="pics/city1Leftpoints.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/city1Rightpoints.jpg"><img src="pics/city1Rightpoints.jpg"></a>
+            </li>
+            
+        </ul>
+        <h2>Warping the Images</h2>
+        <p>At this point we need to make the decision of which image should be the center of this mosaic.  As alluded to earlier, since we only have two images, the final mosaic will be a bit lopsided but we still need to decide on a center image.  For the purposes of this page we will choose the right image as the center.</p>
+        <p>Now that we've chosen an image for the center, we can use the previously defined control points to calculate an 8th degree homography between the two images.  We will use this homography to inverse-warp the left image into the coordinates of the right so that the control points are aligned.  Keep in mind that calculating the homography with more than 4 control points requires a least-squares approximation.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/city1Leftwarp.jpg"><img src="pics/city1Leftwarp.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/city1Rightwarp.jpg"><img src="pics/city1Rightwarp.jpg"></a>
+                <h4>Note that even though we are not warping this image, we still need to pad it so that the left image will fit in its coordinate system.</h4>
+            </li>
+        </ul>
+        <h2>Blending the Images</h2>
+        <p>Now that we have the images warped spatially to where we want them, we need to blend them together.  Because it would be tedious to have to specify a new mask for each new image pair, we need a procedure to automatically define a mask.  We begin by performing the Euclidian distance transform on the two images.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/city1Leftdtrans.jpg"><img src="pics/city1Leftdtrans.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/city1Rightdtrans.jpg"><img src="pics/city1Rightdtrans.jpg"></a>
+            </li>
+            
+        </ul>
+        <p>We then define the mask as being 1 where the first distance transform is greater than the second, and 0 elsewhere.</p>
+        <ul class= "rig columns-1">
+            <li>
+                <a href="pics/city1mask.jpg"><img src="pics/city1mask.jpg"></a>
+            </li>
+            
+        </ul>
+        <p>Blending using this mask gives us the final panoramic mosaic.</p>
+        <ul class= "rig columns-1">
+            <li>
+                <a href="pics/city1pano.jpg"><img src="pics/city1pano.jpg"></a>
+            </li>
+        </ul>
+        <p>We can repeat the same procedure using the left image as the center to get a slightly different mosaic.</p>
+        <ul class= "rig columns-1">
+            <li>
+                <a href="pics/city1pano2.jpg"><img src="pics/city1pano2.jpg"></a>
+            </li>
+        </ul>
+        <h2>Rectification</h2>
+        <p>Now that we have image morphing down, we can use this to rectify images--to make a predefined set of points a rectangle.  A common use of rectification is to take surfaces in the image and make them face the camera.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/city7Left.jpg"><img src="pics/city7Left.jpg"></a>
+                <h4>Unrectified Image outside the Powell St. Bart Station</h4>
+            </li>
+            <li>
+                <a href="pics/city7Leftrect.jpg"><img src="pics/city7Leftrect.jpg"></a>
+                <h4>Rectified to face the Flood Building sign.</h4>
+            </li>
+        </ul>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/dotdLeft.jpg"><img src="pics/dotdLeft.jpg"></a>
+                <h4>The Cuphead stage presentation at Day of the Devs.</h4>
+            </li>
+            <li>
+                <a href="pics/dotdLeftrect.jpg"><img src="pics/dotdLeftrect.jpg"></a>
+                <h4>Rectified to face the stage.</h4>
+            </li>
+        </ul>
+        <h2>More Mosaics</h2>
+        <h3>Walking down Post St.</h3>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/city2Left.jpg"><img src="pics/city2Left.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/city2Right.jpg"><img src="pics/city2Right.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/city2pano.jpg"><img src="pics/city2pano.jpg"></a>
+                <h4>Right-facing mosaic.</h4>
+            </li>
+            <li>
+                <a href="pics/city2pano2.jpg"><img src="pics/city2pano2.jpg"></a>
+                <h4>Left-facing mosaic.</h4>
+            </li>
+        </ul>
+        <h3>Across the street from the Montgomery St Bart.</h3>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/city3Left.jpg"><img src="pics/city3Left.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/city3Right.jpg"><img src="pics/city3Right.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/city3pano.jpg"><img src="pics/city3pano.jpg"></a>
+                <h4>Right-facing mosaic.</h4>
+            </li>
+            <li>
+                <a href="pics/city3pano2.jpg"><img src="pics/city3pano2.jpg"></a>
+                <h4>Left-facing mosaic.</h4>
+            </li>
+        </ul>
+        <h3>The Humble Bundle offices.</h3>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/humbleLeft.jpg"><img src="pics/humbleLeft.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/humbleRight.jpg"><img src="pics/humbleRight.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/humblepano.jpg"><img src="pics/humblepano.jpg"></a>
+                <h4>Right-facing mosaic.</h4>
+            </li>
+            <li>
+                <a href="pics/humblepano2.jpg"><img src="pics/humblepano2.jpg"></a>
+                <h4>Left-facing mosaic.</h4>
+            </li>
+        </ul>
+        <h2>Multiple-Images</h2>
+        As promised here is the 3-image mosaic.  For the sample pictures, instead of taking the pictures with a phone, I took screenshots while playing Borderlands 2.  This allows me to make sure there aren't translation artifacts because I can just move the mouse to turn the camera.  However, this doesn't come without warnings.  If you attempt this method of image capture, make sure that you set the game to have a low FOV.  This is because if your collection of pictures extends more than 180 degrees, the mosaic cannot be projected onto a plane.
+        <h3>Presenting: The Wildlife Exploitation Preserve</h3>
+        <ul class= "rig columns-3">
+            <li>
+                <a href="pics/wildlife1.jpg"><img src="pics/wildlife1.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/wildlife2.jpg"><img src="pics/wildlife2.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/wildlife3.jpg"><img src="pics/wildlife3.jpg"></a>
+            </li>
+        </ul>
+        <ul class= "rig columns-1">
+            <li>
+                <a href="pics/wildlifepano2.jpg"><img src="pics/wildlifepano2.jpg"></a>
+            </li>
+        </ul>
+        <h2>Automatic Control Point Selection</h2>
+        <p>While it's nice to be able to make panoramas by manually selecting control points, we are lazy computer scientists.  We want to have computers do this step for us.  To illustrate the steps behind this, we will use the screenshots below.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/wildlife1.jpg"><img src="pics/wildlife1.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/wildlife2.jpg"><img src="pics/wildlife2.jpg"></a>
+            </li>
+        </ul>
+        <h3>Harris Corner Detection</h3>
+        <p>The first step we need to perform is identifying feature points (corners) in the image.  This is done with an implementation of the Harris Interest Point Detector which is thresholded above the mean corner response of the image to limit the number of low-value corners.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/wildlife1thresholdcorners.jpg"><img src="pics/wildlife1thresholdcorners.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/wildlife2thresholdcorners.jpg"><img src="pics/wildlife2thresholdcorners.jpg"></a>
+            </li>
+        </ul>
+        <h3>Adaptive Non-Maximal Suppression</h3>
+        <p>Now we have identified feature points, but there are far too many to be useful for homography construction.  To remedy this we perform adaptive non-maximal suppression.  That is, we use the highest-valued corners that are not near other corners.  This ensures not only that we limit the number of corners, but that they are spread out evenly and highly-valued.  For the purposes of this project, I limit to 500 points.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/wildlife1suppressed.jpg"><img src="pics/wildlife1suppressed.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/wildlife2suppressed.jpg"><img src="pics/wildlife2suppressed.jpg"></a>
+            </li>
+        </ul>
+        <h3>Feature Descriptors</h3>
+        <p>We want to be able to compare the feature points of these two images and find matches.  For this, we create sampled 8x8 normalized patches around each feature points, on display below.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/wildlife1desc.jpg"><img src="pics/wildlife1desc.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/wildlife2desc.jpg"><img src="pics/wildlife2desc.jpg"></a>
+            </li>
+        </ul>
+        <h4>Bells and Whistles:</h4>
+        <p>The feature descriptors have been aligned so that the gradient of the image at the feature point points to the right.  This makes the descriptors invariant to image rotation and allows for better matching.</p>
+        <h3>Feature Matching</h3>
+        <p>We now compare the descriptors of the two images to find matching points across the two images.  Points are chosen to minimize the descriptors' SSD.  To account for the fact that not all points have a match in the other image, we only consider points whose best match is at least twice as good as its second best match.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/wildlife1noOutliers.jpg"><img src="pics/wildlife1noOutliers.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/wildlife2noOutliers.jpg"><img src="pics/wildlife2noOutliers.jpg"></a>
+            </li>
+        </ul>
+        <p>You will notice that not all the above points match perfectly with a point in the opposite image.  This is due to the threshold we chose of 2x.  However, these outliers prove to be not a problem, as they are eliminated in the final step.</p>
+        <h3>RANSAC (Random Sample Consensus)</h3>
+        <p>To deal with the presence of huge outliers after the matching step, we perform a large number of RANSAC iterations on the points to pick the best grouping.  RANSAC works as follows.  We select four random matching point pairs out of our current set and compute an exact homography matrix from these.  We then warp all the feature points in the left image and see where they land on the right image.  If a point landed within 2 pixels of what we considered to be its "match", then we keep note of it as an inlier of the current homography.  We run this procedure a large number of times (200 for this example) and keep the largest set of inliers as our final control points.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/wildlife1finalPoints.jpg"><img src="pics/wildlife1finalPoints.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/wildlife2finalPoints.jpg"><img src="pics/wildlife2finalPoints.jpg"></a>
+            </li>
+        </ul>
+        <p>Using these control points to make a mosaic produces results that are comparable if not better than performing manual control point selection.</p>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/wildlifepano2.jpg"><img src="pics/wildlifepano2.jpg"></a>
+                <h4>Result from manually selected control points.</h4>
+            </li>
+            <li>
+                <a href="pics/wildlifepanoauto.jpg"><img src="pics/wildlifepanoauto.jpg"></a>
+                <h4>Result from automatically selected control points.</h4>
+            </li>
+        </ul>
+        <h2>A selection of automatically matched mosaics.</h3>
+        <h3>A busy day in the CS10 lab.</h3>
+        <ul class= "rig columns-2">
+            <li>
+                <a href="pics/cs101.jpg"><img src="pics/cs101.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/cs102.jpg"><img src="pics/cs102.jpg"></a>
+            </li>
+        </ul>
+        <ul class= "rig columns-1">
+            <li>
+                <a href="pics/cs10pano.jpg"><img src="pics/cs10pano.jpg"></a>
+            </li>
+        </ul>
+        <h3>The Floating City of Sanctuary</h3>
+        <ul class= "rig columns-3">
+            <li>
+                <a href="pics/sanctuary1.jpg"><img src="pics/sanctuary1.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/sanctuary2.jpg"><img src="pics/sanctuary2.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/sanctuary3.jpg"><img src="pics/sanctuary3.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/sanctuary4.jpg"><img src="pics/sanctuary4.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/sanctuary5.jpg"><img src="pics/sanctuary5.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/sanctuary6.jpg"><img src="pics/sanctuary6.jpg"></a>
+            </li>
+        </ul>
+        <ul class= "rig columns-1">
+            <li>
+                <a href="pics/sanctuarypano.jpg"><img src="pics/sanctuarypano.jpg"></a>
+            </li>
+        </ul>
+        <h4>Acknowledgements:</h4>
+        <p>Website template borrowed from Daniel Tyrrell</p>
+        <p>Mosaic is a really weird word.</p>
+    </div>
+</body>
+</html>

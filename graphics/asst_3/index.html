@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Your Name  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 3: PathTracer</h1>
+    <h2 align="middle">Lucas Karahadian</h2>
+
+    <div class="padded">
+        
+
+    <h2 align="middle">Part 1: Ray Generation and Intersection</h2>
+        <p>For the first part of this project we focus on the interaction between the camera and the rest of the rendering pipeline.  In order to find the value a pixel should take, we cast a ray from the image plane of the camera through the focal point.  From that point we test if that ray intersects with any of the primitives in the scene and calculate the pixel value based on that intersection.  This camera ray is calculated using both the horizontal and vertical fields of view and assuming that the image plane is one unit behind the focal point.</p>
+        <p>Once we have a ray entering the scene, we need to check if it intersects any of the primitives in the scene and record which one is the closest.  For the intersection test against triangle primitives (which is the most common primitive we encounter), we first find the intersection point of the ray and the plane the triangle lies in using the implicit equation for a plane.  Once we have this point, we can test to see if it lies in the triangle using the line equations from Project 1.</p>
+        <p>Until part 3, where we start actually calculating light, the shown renders will be made using a shader that only takes the surface normals into account.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/teapot.png" width="480px" />
+                    <figcaption align="middle">This is the teapot model we saw oh so much of last project.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/cow.png" width="480px" />
+                    <figcaption align="middle">Another leftover mesh from the previous project.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/box.png" width="480px" />
+                    <figcaption align="middle">This is the canonical Cornell Box, albeit rendered without any fancy lighting effects.  We'll fix that later.</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middle">Part 2: Bounding Volume Hierarchy</h2>
+        <p>As we deal with larger and larger meshes, a problem quickly arises with checking the ray against every primitive in the scene; it takes a very long time.  This is the incentive for organizing our scene into what is called a "bounding volume hierarchy."  The gist of it is we can divide the space of the scene into a binary tree-like structure where each node represents a sub-bounding-box of the main scene and primitives are only stored in the leaves.  Then we can perform a binary search on it instead of a linear search of all the primitives.</p>
+        <p>The construction of the BVH is pretty straightforward.  We first predefine a maximum number of primitives we want in a leaf node as our base condition.  If the current list of primitives is smaller than this maximum, we place all these primitives in a leaf node.  Otherwise we need to recurse on two subsets of the primitives.  The way I have decided to split the scene is a median split on the centroids of the primitives along the axis of the largest dimension in the extent of the bounding box.  All primitives less than the median of their centroids go into one sub-BVH and all primitives greater go into the other.  </p>
+        <p>This construction algorithm works for a good number of scenes.  However, there are some that do not converge by this method.  One of the sub-BVHs will end up with zero elements and the recursion will never terminate.  To counteract this, I added a condition where if a BVH splits and one isn't populated, it will just create a leaf node there.</p>
+        <p>Once the BVH has been constructed, we can run intersection tests on it.  We start on the root node and test to see if the camera ray intersects with its bounding box.  If the ray does not hit the bounding box (or the box doesn't fall within the ray's min and max range), we can ignore all of the primitives inside of it.  If it did hit the bounding box, then we check to see if it is a leaf node.  If it is a leaf node, we can perform primitive intersection tests with all the primitives within the node, otherwise we recurse and check the intersection with its two children.</p>
+        <p>Now we can render much larger meshes with only marginally longer runtime.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/planck.png" width="480px" />
+                    <figcaption align="middle">This mesh has 9x the number of primitives than in the cow mesh above.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/beast.png" width="480px" />
+                    <figcaption align="middle">And this one has 11x.  Both of these meshes were rendered very quickly thanks to the BVH.</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middle">Part 3: Direct Illumination</h2>
+        <p>Now we begin doing some real light simulations, starting with direct lighting.  Direct lighting is the light that falls on a surface directly from a light source.  Our algorithm for estimating this direct light works as follows.  We add up the light that falls on a particular point from every direct source in the scene.  For a particular light, we sample its radiance in the direction of the intersection point in question. Then we cast a ray from the intersection point back in the direction of the light to determine if the intersection point lies in a shadow.  If the point is not in that light's shadow, then we accumulate the light sample we took. If the light in question is a point light, we only take one sample.  If it is not a point light, we take a number of different samples and average them.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_64_32.png" width="480px" />
+                    <figcaption align="middle">This bunny was rendered under direct lighting only with 64 samples per pixel and 32 samples per area light.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/dragon_64_32.png" width="480px" />
+                    <figcaption align="middle">Dragon rendered with the same params.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>Now we look at the effects of increasing the number of area light samples.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_1_1.png" width="480px" />
+                    <figcaption align="middle">1 Sample per light</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_1_2.png" width="480px" />
+                    <figcaption align="middle">2 Samples per light</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_1_4.png" width="480px" />
+                    <figcaption align="middle">4 Samples per light</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_1_8.png" width="480px" />
+                    <figcaption align="middle">8 Samples per light</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_1_16.png" width="480px" />
+                    <figcaption align="middle">16 Samples per light</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_1_32.png" width="480px" />
+                    <figcaption align="middle">32 Samples per light</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_1_64.png" width="480px" />
+                    <figcaption align="middle">64 Samples per light</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>notice that the noise levels in the soft shadows below the bunny take significant dives as we increase the number of samples per area light.</p>
+    <h2 align="middle">Part 4: Indirect Illumination</h2>
+        <p>Now we look at indirect lighting,  Indirect lighting is the light that reflects off of nearby surfaces to illuminate the point in question.  We calculate the indirect illumination of a point, by casting a ray from the surface in a direction sampled along the BSDF of the material.  We can then find the reflected spectrum of light from the closest intersected surface.  This will recursively continue until a we probabilistically end the recursion with a process called Russian Roulette.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/dragon2.png" width="480px" />
+                    <figcaption align="middle">The dragon is now rendered with full global lighting.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bench.png" width="480px" />
+                    <figcaption align="middle">A bench with full global lighting.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres.png" width="480px" />
+                    <figcaption align="middle">A Cornell Box with two lambertian spheres.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_direct.png" width="480px" />
+                    <figcaption align="middle">The Direct lighting on said box.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_indirect.png" width="480px" />
+                    <figcaption align="middle">Indirect lighting</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>We can also look at what happens as we increase the maximum depth of our camera rays.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_64_32.png" width="480px" />
+                    <figcaption align="middle">Maximum depth of 0, aka Direct lighting only.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_2.png" width="480px" />
+                    <figcaption align="middle">Depth 2</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bunny_3.png" width="480px" />
+                    <figcaption align="middle">Depth 3</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>As you can see, increasing the ray depth brings darker parts of the image into the light.</p>
+        <p>We can also achieve better graphical fidelity by increasing the number of samples per pixel.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_1_32.png" width="480px" />
+                    <figcaption align="middle">1 sample per pixel</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_4_32.png" width="480px" />
+                    <figcaption align="middle">4 samples per pixel</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_16_32.png" width="480px" />
+                    <figcaption align="middle">16 samples per pixel.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres.png" width="480px" />
+                    <figcaption align="middle">64 samples per pixel</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/spheres_1024_32.png" width="480px" />
+                    <figcaption align="middle">1024 samples per pixel</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middle">Part 5: Materials</h2>
+        <p>As mentioned above, indirect lighting is calculated in part by sampling along the BSDF of the surface.  This BSDF is unique for every material, so making new materials is akin to designing a new BSDF.  For this project, we implemented BSDFs for mirrors and clear glass.  Both of these BSDFs are what is knowns as delta-BSDFs, meaning they have reflective or refractive characteristics.  So sampling one of these BSDFs given a particular output vector is just calculating where the input light could come from, a simple calculation for mirrors and refractive glass.  For a mirror, we just reflect the output vector over the surface normal, and for refraction we can apply Snell's law to find the input vector.  However, glass is not 100% refraction, there is a component of reflection that we sample using Snick's Approximation.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_0.png" width="480px" />
+                    <figcaption align="middle">0-depth Camera Rays</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_1.png" width="480px" />
+                    <figcaption align="middle">1-depth Camera Rays</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_2.png" width="480px" />
+                    <figcaption align="middle">2-depth Camera Rays</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_3.png" width="480px" />
+                    <figcaption align="middle">3-depth Camera Rays</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_4.png" width="480px" />
+                    <figcaption align="middle">4-depth Camera Rays</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_100.png" width="480px" />
+                    <figcaption align="middle">Fully Converged Caustics</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>On the sphere on the left, we have a mirror which reflects the light in the room.  On the right we have a glass ball that creates a number of caustics in the scene.  Below the sphere light from the ceiling lamp is focused through the glass ball.  On the right wall, we also see a small lens-like focus where light is reflected off of the mirror ball and through the glass ball.  The noise that shows up as we increase the ray depth is aliasing due to sampling the delta BSDF of the glass ball.  This is noise that can be removed by taking more samples per pixel.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_sample_1.png" width="480px" />
+                    <figcaption align="middle">1 sample per pixel</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_sample_4.png" width="480px" />
+                    <figcaption align="middle">4 samples per pixel</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_sample_16.png" width="480px" />
+                    <figcaption align="middle">16 samples per pixel</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_sample_64.png" width="480px" />
+                    <figcaption align="middle">64 samples per pixel</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/mirror_sample_1024.png" width="480px" />
+                    <figcaption align="middle">1024 samples per pixel</figcaption>
+                </tr>
+            </table>
+        </div>
+
+</div>
+</body>
+</html>
+
+
+
+

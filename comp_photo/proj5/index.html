@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lucas Karahadian</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+    <div class="centered">
+        <h1>Project 5: Face Morphing</h1>
+        <h4 style="text-align: center;"> By Lucas Karahadian </h4>
+        <h2>Overview:</h2>
+        <p> In this project we looked at morphing two images into each other and the steps involved.  As an example, I will be using the following images.</p>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/joseph.jpg"><img src="pics/joseph.jpg"></a>
+                <h3>My good friend Joseph.</h3>
+            </li>
+            <li>
+                <a href="pics/trump.jpg"><img src="pics/trump.jpg"></a>
+                <h3>Presidential "hopeful" and general nusiance Donald Trump.</h3>
+            </li>
+        </ul>
+        <h2>Correspondence Points</h2>
+        <p>The first step for morphing images together is to define points that represent the same part of both images.  To do this, I used MATLAB's cpselect command.</p>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/josephCorrespond.jpg"><img src="pics/josephCorrespond.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/trumpCorrespond.jpg"><img src="pics/trumpCorrespond.jpg"></a>
+            </li>
+        </ul>
+        <p>For this morph, I elected to use 99 correspondence points, mostly out of my own perfectionism.</p>
+        <h2>Triangulation</h2>
+        <p>From these correspondence points, we calculate a delaunay triangulation based on the average of the two sets of correspondence points.</p>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/josephTri.jpg"><img src="pics/josephTri.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/trumpTri.jpg"><img src="pics/trumpTri.jpg"></a>
+            </li>
+        </ul>
+        <h2>Affine Transformations</h2>
+        <p>These triangles allow us to calculate a large number of affine transformations that map pixels in the source image to pixels in a destination image.</p>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/josephShape.jpg"><img src="pics/josephShape.jpg"></a>
+                <h3>Joseph's pixels transformed to the mean shape.</h3>
+            </li>
+            <li>
+                <a href="pics/trumpShape.jpg"><img src="pics/trumpShape.jpg"></a>
+                <h3>Trump's pixels transformed to the mean shape.</h3>
+            </li>
+        </ul>
+        <h2>Cross Dissolve</h2>
+        <p>From two transformed images, we can create a true morph by cross dissolving them.</p>
+        <ul class = "rig columns-1">
+            <li>
+                <a href="pics/josephTrumpHalf.jpg"><img src="pics/josephTrumpHalf.jpg"></a>
+                <h3>The halfway morph between Joseph and Trump.</h3>
+            </li>
+        </ul>
+        <h2>It's Morphing Time!</h2>
+        <p>Now that we have a method for getting a still morphed image halfway between two images, we can create an animated gif that smoothly transitions between the two source images.</p>
+        <ul class = "rig columns-1">
+            <li>
+                <a href="pics/josephTrump.gif"><img src="pics/josephTrump.gif"></a>
+                <h3>A true work of art.</h3>
+            </li>
+        </ul>
+        <p>I am especially proud of the hairline and the shoulders in this morph.</p>
+        <h2>Mean Face of a Population.</h2>
+        <p>Now that we can morph two images together by transforming to the average shape and cross-dissolving, we can extend this to larger populations to find the "average face."  For this, I used the first 50 faces from the <a href="fei.edu.br/~cet/facedatabase.html">FEI Face Database</a>.  I found the mean shape of these 50 images, morphed them all to this mean shape, and cross-dissolved.</p>
+        <ul class = "rig columns-1">
+            <li>
+                <a href="pics/50BrazilAv.jpg"><img src="pics/50BrazilAv.jpg"></a>
+                <h3>The average face of Brazil.</h3>
+            </li>
+        </ul>
+        <p>In addition, I computed the average faces of 50 males and 50 females to create subset averages.</p>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/femaleAv.jpg"><img src="pics/femaleAv.jpg"></a>
+                <h3>The average Brazilian woman.</h3>
+            </li>
+            <li>
+                <a href="pics/maleAv.jpg"><img src="pics/maleAv.jpg"></a>
+                <h3>The average Brazilian man.</h3>
+            </li>
+        </ul>
+        <p>You will notice that my average Brazilian man image looks almost identical to what I called the average Brazilian face.  This is because the subset of the FEI database that I used ended up being largely male.</p>
+        <p>We can look at each of the individual images and see how they morph into the shape defined by the averages above.</p>
+        <ul class = "rig columns-3">
+            <li>
+                <a href="pics/1b.jpg"><img src="pics/1b.jpg"></a>
+                <h3>The first image from the FEI Database.</h3>
+            </li>
+            <li>
+                <a href="pics/1b50BrazilAv.gif"><img src="pics/1b50BrazilAv.gif"></a>
+                <h3>The morph into the average shape.</h3>
+            </li>
+            <li>
+                <a href="pics/1b50BrazilAv.jpg"><img src="pics/1b50BrazilAv.jpg"></a>
+                <h3>The face transformed into the average shape.</h3>
+            </li>
+        </ul>
+        <ul class = "rig columns-3">
+            <li>
+                <a href="pics/2b.jpg"><img src="pics/2b.jpg"></a>
+                <h3>The second image from the FEI Database.</h3>
+            </li>
+            <li>
+                <a href="pics/2b50BrazilAv.gif"><img src="pics/2b50BrazilAv.gif"></a>
+                <h3>The morph into the average shape.</h3>
+            </li>
+            <li>
+                <a href="pics/2b50BrazilAv.jpg"><img src="pics/2b50BrazilAv.jpg"></a>
+                <h3>The face transformed into the average shape.</h3>
+            </li>
+        </ul>
+        <ul class = "rig columns-3">
+            <li>
+                <a href="pics/3b.jpg"><img src="pics/3b.jpg"></a>
+                <h3>The third image from the FEI Database.</h3>
+            </li>
+            <li>
+                <a href="pics/3b50BrazilAv.gif"><img src="pics/3b50BrazilAv.gif"></a>
+                <h3>The morph into the average shape.</h3>
+            </li>
+            <li>
+                <a href="pics/3b50BrazilAv.jpg"><img src="pics/3b50BrazilAv.jpg"></a>
+                <h3>The face transformed into the average shape.</h3>
+            </li>
+        </ul>
+        <p>We can also look at other faces not included in the average calculation and see how they compare to the mean face.</p>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/self1.jpg"><img src="pics/self1.jpg"></a>
+                <h3>Me</h3>
+            </li>
+            <li>
+                <a href="pics/50BrazilAv.jpg"><img src="pics/50BrazilAv.jpg"></a>
+                <h3>Mean Face</h3>
+            </li>
+        </ul>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/50BrazilAvself1.jpg"><img src="pics/50BrazilAvself1.jpg"></a>
+                <h3>The Mean Face transformed to match the geometry of my face.</h3>
+            </li>
+            <li>
+                <a href="pics/self150BrazilAv.jpg"><img src="pics/self150BrazilAv.jpg"></a>
+                <h3>My face transformed to match the geometry of the mean face.</h3>
+            </li>
+        </ul>
+        <h2>Caricatures</h2>
+        <p>We have seen what happens when we morph between two images, but what happens when we go beyond the destination image and keep morphing the shape away from the source?  We end up with a caricature that exaggerates the most differing features between the two images.  As an example, I have created a caricature of myself from the mean face above.</p>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/self1CharLess.jpg"><img src="pics/self1CharLess.jpg"></a>
+                <h3>My face caricatured based on the Brazilian average.</h3>
+            </li>
+            <li>
+                <a href="pics/self1Char.jpg"><img src="pics/self1Char.jpg"></a>
+                <h3>Taking the caricature even farther.</h3>
+            </li>
+        </ul>
+        <p>You'll notice that the features most exaggerated are my chin, which is a lot pointier than the average, and my forehead, due to the translation of my face and the absence of correspondence points above my eyebrows.</p>
+        <h2>Switching Averages</h2>
+        <p>By creating average of two distinct subsets (in this case male and female), you can switch a face from one subset to the other by computing differences between the averages.  We need to compute two types of differences to achieve a good average transfer, a color difference and a shape difference.  The shape difference is easily calculated by subtracting the corresondence points of the two averages.  The color difference is less easily found.  We must first transform both averages to the geometry of the source image and then take the difference of the pixels directly.</p>
+        <ul class = "rig columns-3">
+            <li>
+                <a href="pics/colorIm1.jpg"><img src="pics/colorIm1.jpg"></a>
+                <h3>The average male face transformed to match the geometry of my face.</h3>
+            </li>
+            <li>
+                <a href="pics/colorIm2.jpg"><img src="pics/colorIm2.jpg"></a>
+                <h3>The average female face transformed to match the geometry of my face.</h3>
+            </li>
+            <li>
+                <a href="pics/colorDisp.jpg"><img src="pics/colorDisp.jpg"></a>
+                <h3>The color displacement vector between the two averages.</h3>
+            </li>
+        </ul>
+        <p>Unfortunately, this data set only provided annotated black and white images, so our "color" displacement is actually a brightness displacement.  Nevertheless it serves our purpose.  We can now apply these vectors to the image of my face.</p>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/self1.jpg"><img src="pics/self1.jpg"></a>
+                <h3>The original picture of myself, fully male.</h3>
+            </li>
+            <li>
+                <a href="pics/femColor.jpg"><img src="pics/femColor.jpg"></a>
+                <h3>My face after applying the feminine brightness vector.</h3>
+            </li>
+        </ul>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/femShape.jpg"><img src="pics/femShape.jpg"></a>
+                <h3>My face after applying the feminine shape vector.</h3>
+            </li>
+            <li>
+                <a href="pics/femMorph.jpg"><img src="pics/femMorph.jpg"></a>
+                <h3>My face after applying both the feminine brightness and shape vectors.</h3>
+            </li>
+        </ul>
+        <h4>Acknowledgements:</h4>
+        <p>Website template borrowed from Daniel Tyrrell</p>
+    </div>
+</body>
+</html>

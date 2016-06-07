@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lucas Karahadian</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+    <div class="centered">
+        <h1>Project 4: Seam Carving/Content Aware Scaling</h1>
+        <h4 style="text-align: center;"> By Lucas Karahadian </h4>
+        <h2>Overview:</h2>
+        <p> In this project we looked at seam carving.  That is, the finding of a "minimal-energy" path  a single pixel wide, called a seam, from one edge of an image to the other.  This seam can then be removed to shrink the image without disrupting high energy content.</p>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/house_by_jim_mccann.jpg"><img src="pics/house_by_jim_mccann.jpg"></a>
+                <h3>The image we wish to find a seam in.</h3><h3>(Click on images to see larger)</h3>
+            </li>
+            <li>
+                <a href="pics/houseSeam.jpg"><img src="pics/houseSeam.jpg"></a>
+                <h3>Same image with the minimal-energy seam highlighted in red.</h3>
+            </li>
+        </ul>
+        <p>I referred to minimal-energy in quotes above because there is no hard-set energy function for this procedure.  For this project I used as my energy function the sum of the magnitude of the x and y gradients.  This yielded results sufficient for my purposes.  In addition, the algorithm used to find seams is the dynamic programming algorithm detailed in <a href="http://www-inst.eecs.berkeley.edu/~cs194-26/fa15/hw/proj4-seamcarving/imret.pdf">this paper.</a></p>
+
+        <h2>Content Aware Scaling:</h2>
+        <p>We can use these minimal-energy seams to achieve content aware scaling by finding and removing new seams until the image is the desired size.  For the purposes of this project, I have only implemented single-directional scaling (either horizontal or vertical), but algorithms exist for intelligently scaling in multiple directions at once.</p>
+        <ul class = "rig columns-2">
+            <li>
+                <a href="pics/houseH.jpg"><img src="pics/houseH.jpg"></a>
+                <h3>The image above scaled to 50% in the horizontal direction.</h3>
+            </li>
+            <li>
+                <a href="pics/houseV.jpg"><img src="pics/houseV.jpg"></a>
+                <h3>The image above scaled to 50% in the vertical direction</h3>
+            </li>
+        </ul>
+        <h3>Square Wallpapers</h3>
+        <p>To quickly create a number of good examples of this process, all the below pictures were scaled to perfect squares.  This creates from desktop wallpapers perfect images for thumbnails on social media websites.</p>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/chWoods.jpg"><img src="pics/chWoods.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/chWoodsSquare.jpg"><img src="pics/chWoodsSquare.jpg"></a>
+            </li>
+        </ul>
+        <p>An unfortunate consequence of this process (which will be outlined more later) is when it is applied to images with uniformly heavy detail, it tends to remove image sections we don't want it to.  The case above is not so bad, but the trees were scaled in very spooky manners that lend change the atmosphere of the image significantly.</p>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/city.jpg"><img src="pics/city.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/citySquare.jpg"><img src="pics/citySquare.jpg"></a>
+            </li>
+        </ul>
+        <p>Apart from some artifacting on the left border of the image, this turned out really well due to vast expanses of empty sky and sea for the seams to follow.</p>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/pandora.jpg"><img src="pics/pandora.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/pandoraSquare.jpg"><img src="pics/pandoraSquare.jpg"></a>
+            </li>
+        </ul>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/piano.JPG"><img src="pics/piano.JPG"></a>
+                <h3>My lovely apartment.</h3>
+            </li>
+            <li>
+                <a href="pics/pianoSquare.jpg"><img src="pics/pianoSquare.jpg"></a>
+                <h3>Who needs smoke detectors anyway.</h3>
+            </li>
+        </ul>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/seagulls.jpg"><img src="pics/seagulls.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/seagullsSquare.jpg"><img src="pics/seagullsSquare.jpg"></a>
+            </li>
+        </ul>
+        <p>Something I observed in the process of this project is that horizontal and vertical seams really don't play well with established diagonals in images.  This is seen very well in the above image, where the coastline trickles down the right side of the image due to seams wanting to keep the ocean itself and get rid of the beach below it.</p>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/sky.jpg"><img src="pics/sky.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/skySquare.jpg"><img src="pics/skySquare.jpg"></a>
+            </li>
+        </ul>
+        <p>This is one of my favorite results due to how the scaling process maintained the horizontal gradient of the sky from blue to orange.</p>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/sotc.jpg"><img src="pics/sotc.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/sotcSquare.jpg"><img src="pics/sotcSquare.jpg"></a>
+            </li>
+        </ul>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/portal.jpg"><img src="pics/portal.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/portalSquare.jpg"><img src="pics/portalSquare.jpg"></a>
+            </li>
+        </ul>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/space.jpg"><img src="pics/space.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/spaceSquare.jpg"><img src="pics/spaceSquare.jpg"></a>
+            </li>
+        </ul>
+        <p>As a sucker for space pictures, this result is by far my favorite.  It is also a perfect example of the seam-carving algorithm in action, getting rid of the empty space between objects in the picture and just moving them closer together.</p>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/self.JPG"><img src="pics/self.JPG"></a>
+                <h3>#selfie</h3>
+            </li>
+            <li>
+                <a href="pics/selfSquare.jpg"><img src="pics/selfSquare.jpg"></a>
+                <h3>That went better than expected.</h3>
+            </li>
+        </ul>
+        <h2>Limitations:</h2>
+        <p>I got very lucky with making a square out of the picture of my face.  Faces are notoriously difficult for content-aware scaling to deal with (as popularized online at reddit's content aware scale <a href="http://www.reddit.com/r/contentawarescale">subreddit</a>).  In the case of the previous example, I was scaling my face to the absolute limit before strange things started happening.  Let's see what happens when we go further.</p>
+        <ul class="rig columns-1">
+            <li>
+                <a href="pics/selfDistort.jpg"><img src="pics/selfDistort.jpg"></a>
+                <h3>Oh my</h3>
+            </li>
+        </ul>
+        <p>One reason this happens is the lack of high-energy content in the forehead and cheeks.  Seams are totally fine eliminating pieces of these even though to our human perception, the forehead and cheeks are vital to the structure of the face.  But we are still getting a bit lucky here.  My beard is seen as high-energy content and so prevents seams from deviating below my nose and the scaling just squashes my head down.  Also notice that my bed in the background of the left side of the picture is relatively untouched due to the seam preferring the wall above it.</p>
+        <ul class="rig columns-1">
+            <li>
+                <a href="pics/selfHeavyDistort.jpg"><img src="pics/selfHeavyDistort.jpg"></a>
+                <h3>And this is to go even further beyond.</h3>
+            </li>
+        </ul>
+        <ul class="rig columns-1">
+            <li>
+                <a href="pics/selfHeavyDistortSquare.jpg"><img src="pics/selfHeavyDistortSquare.jpg"></a>
+                <h3>I think we should stop here.</h3>
+            </li>
+        </ul>
+        <h3>One Final Example:</h3>
+        <ul class="rig columns-2">
+            <li>
+                <a href="pics/smash.jpg"><img src="pics/smash.jpg"></a>
+            </li>
+            <li>
+                <a href="pics/smashSquare.jpg"><img src="pics/smashSquare.jpg"></a>
+            </li>
+        </ul>
+        <p>The reason I have chosen to make this my final example is because it encapsulates the good, bad, and the ugly about content-aware scaling.  If you focus on the top half of the scaled image, you'll see the scaling working as it should, bringing all the disparate objects closer by removing unwanted blank space.  However, as you look further down, you'll notice that there was so much high-energy content in the original image that the algorithm was unable to avoid cutting out important sections.  In the worse cases you'll want to look at Pikachu and Yoshi in the bottom right, both of whom look like they were in some sort of horrific accident.</p>
+        <h2>Lessons Learned:</h2>
+        <p>The take-away from this project is that while many pictures have a lot of unneeded space that can be eliminated easily when scaling them down, it is not always the best idea to do so.  Human faces, among other things, have blank space that is part of their core structure and that makes things look really surreal when eliminated carelessly.  Modern image-editing software gets around this by allowing users to select regions to either keep or get rid of and by tailoring seams around these regions.  But this is outside of my current scope, maybe next time. </p>
+        <h4>Acknowledgements:</h4>
+        <p>All pictures not taken of myself and my apartment were downloaded from <a href="http://www.reddit.com/r/wallpapers">reddit</a>.</p>
+        <p>Website template borrowed from Daniel Tyrrell</p>
+    </div>
+</body>
+</html>

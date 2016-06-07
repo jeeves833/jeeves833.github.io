@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Lucas Karahadian  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Final Project: Mesh Simplification</h1>
+    <h2 align="middle">Lucas Karahadian</h2>
+    <div class="padded">
+    <p>In this project, I will be implementing mesh simplification using a quadric error metric.  This will involve ranking the existing edges such that higher ranked edges contribute more to the overall shape of the mesh.  Then I will collapse the edges in this order until reaching a user-specified number of edges in the mesh.  This will be built on top of the existing MeshEdit program from assignment 2.</p>
+
+    <h2 align="middle">Background</h2>
+      <p>It comes as no surprise to anyone doing high-level 3D modeling that meshes can grow to an enormous size.  The largest of the meshes we have dealt with reach up to 250,000 faces.  In addition to taking up more memory, these large meshes can drammatically slow down the process of ray-tracing in physics based rendering programs.  The mesh simplification process collapses edges to reduce the number of faces in a way such that the mesh looks overall similar and is (in results) akin to downsampling textures.  I will be basing my code on <a href="http://www.cs.cmu.edu/~./garland/quadrics/quadrics.html">this paper</a>.  Additionally, as a practical application for this simplification, I propose that these simplified meshes can substitute far away meshes or small meshes for speeding up ray-tracing.</p>
+    <h2 align="middle">Resources</h2>
+      <p>As stated above, I will be building this program on top of the previously built MeshEdit assignment <a href="http://cs184.eecs.berkeley.edu/cs184_sp16/article/6">here</a>.  The level of simplification will be controlled in a way similar to how we controlled the depth of the sensor plane in the Lens Simulation assignment.  The "I" key will be used to simplify the mesh either by a discrete number of faces or to a percentage of faces.  The "J" and "K" keys will be used to adjust the delta between simplification levels.</p>
+    <h2 align="middle">Goals & Deliverables</h2>
+      <p>What I will deliver is an updated MeshEdit program that allows the user to simplify their meshes on the fly.</p>
+      <p>My primary goal is to demonstrate that mesh simplification via the quadric error metric can be used to reduce the size of a mesh while maintaining its viability for use in scenes that appear small from the camera's perspective.  The primary deliverables will be photos of a collection of different meshes showing increasing levels of simplification.  For my presentation I will also demonstrate the changes to the MeshEdit UI I made in regards to interactive simplification.</p>
+      <p>If I have time at the end, I may look at other metrics for mesh simplification and try to draw a comparison between them.</p>
+    <h2 align="middle">Schedule (Each task roughly 1/2 week)</h2>
+      <ul>
+        <li>Implement Edge collapse within the half-edge data structure.</li>
+        <li>Implement quadric error measurements of edges.</li>
+        <li>Implement iterative simplification by collapsing edges according to quadric error.</li>
+        <li>Connect this to the UI / add display for simplification level used.</li>
+        <li>Collect a series of meshes to be used as examples.</li>
+      </ul>
+        <!-- <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/what_now.gif" width="480px" />
+                    <figcaption align="middle">H3H3H3H3H3H3H3H3</figcaption>
+                </tr>
+            </table>
+        </div> -->
+
+</div>
+</body>
+</html>
+
+
+
+

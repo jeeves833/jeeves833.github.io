@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Lucas Karahadian  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Mesh Simplification and Remeshing</h1>
+    <h2 align="middle">Lucas Karahadian</h2>
+    <div class="padded">
+    <p>For this project, I look at two methods of approximating complicated meshes: quadric error simplification and delaunay remeshing.  Quadric error simplification iteratively performs edge collapse operations that minimally alter the overall shape of the mesh.  Delaunay remeshing performs mesh operations to nudge the mesh towards a delaunay triangulation of faces.  After implementing both of these algorithms, I extended the MeshEdit interface from assignment 2 to support the application of these algorithms.</p>
+    <h4>Original Proposal</h4>
+    <a href="proposal.html">Here</a>
+    <h2 align="middle">Technical Implementation</h2>
+    <h3>Collapse Edge</h3>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                <img src="images/edgeCollapse.png" width="960px" />
+                <!-- <figcaption align="middle"></figcaption> -->
+            </tr>
+        </table>
+    </div>
+    <p>In order to implement either approximation algorithm, I first need to have a routine that collapses edges.  Unlike previously implemented local operations, collapse actually involves deleting mesh elements (6 halfedges, 3 edges, 2 faces, and a face).  This means that its implementation needs to be very careful about which elements are deleted and when they are deleted.  If all elements are deleted at the end of the procedure, we can get around the issue of deleting elements prematurely.  In my implementation, I also made a point of assigning my elements such that I never delete the input edge, opting to reassign it to a different position in the mesh and substituting another edge for the deletion.  This allows me to iterate over edges and collapse them without invalidating the pointer needed to continue the iteration.</p>
+    <p>Another important issue to consider when collapsing an edge is the valence of the collapsing vertices.  If one of the vertices has a valence of 3 or less, the halfedge reassignments are very different.  In addition, an edge should not be collapsed if it results in a non-manifold mesh, a situation that only occurs when the edge's vertices have more than 2 shared neighboring vertices.</p>
+    <h3>Quadric Error Simplification</h3>
+    <p>The general algorithm for quadric error simplification is as follows</p>
+    <h4>Find Quadric Matrices for All Faces</h4>
+    <p>As defined in <a href="http://www.cs.cmu.edu/~./garland/quadrics/quadrics.html">this paper</a>, all faces in the initial mesh have a quadric matrix associated with them, which I calculate by taking the outer product of the face's coefficient vector [a, b, c, d] with itself.  Nothing complicated here, a simple iteration over all the faces will suffice.</p>
+    <h4>Quadric Matrices for All Vertices</h4>
+    <p>Now that all faces have a quadric matrix, the quadric matrix (K) of a vertex may be defined as the sum of the quadric matrices of its adjacent faces.  The quadric error of the vertex is also defined as v'Kv where v is the position of the vertex in homogenous coordinate space.</p>
+    <h4>Optimal Contraction Points</h4>
+    <p>When we contract an edge, we have a choice of where to place the new vertex.  For my general-purpose contraction function, the new vertex is placed at the midpoint of the contracting edge, but for quadric error simplification, we can do a lot better.  We define the quadric of the vertex resulting from a collapsed edge as the sum of the two previous vertices' quadrics.  We can now calculate the quadric error of the edge collapse and place the resulting vertex in a position that minimizes its quadric error.  I calculate the optimal points for all edges and place the edges in a priority queue sorted on the quadric error of the collapse.</p>
+    <h4>The Simplification Loop</h4>
+    <p>Simplification is performed by repeatedly finding and collapsing the edges with the lowest quadric error.  The priority queue mentioned above allows me to do this easily by popping off the first edge in the queue, collapsing it, and updating the quadric error of the edges intersecting the new vertex.  While doing this, it is important to keep track of when the collapse fails (in the case of a non-manifold mesh).  In my implementation, I repeat this collapsing of edges until the mesh is reduced to half the number of faces as it started with.</p>
+    <h4>Result:</h4>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                  <img src="images/peter0.png" width="480px" />
+                  <figcaption align="middle"></figcaption>
+                </td>
+                <td align="middle">
+                  <img src="images/peter1.png" width="480px" />
+                  <figcaption align="middle"></figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                  <img src="images/peter2.png" width="480px" />
+                  <figcaption align="middle"></figcaption>
+                </td>
+                <td align="middle">
+                  <img src="images/peter3.png" width="480px" />
+                  <figcaption align="middle"></figcaption>
+                </td>
+            </tr>
+            <tr>
+                <td align="middle">
+                  <img src="images/peter4.png" width="480px" />
+                  <figcaption align="middle"></figcaption>
+                </td>
+                <td align="middle">
+                  <img src="images/peter5.png" width="480px" />
+                  <figcaption align="middle"></figcaption>
+                </td>
+            </tr>
+        </table>
+      <img src="images/peter7.png" width="480px" />
+      <figcaption align="middle">Here we see a very large mesh made much more simplistic by a series of quadric error simplifications.</figcaption>
+      <figcaption align="middle">Notice that the basic shape of the mesh stays constant through the transformation.</figcaption>
+    </div>
+    <h3>Delaunay Remeshing</h3>
+    <p>The primary goal of Delaunay remeshing is to split, collapse, and flip edges in a way that approaches a very uniform (Delaunay) triangulation of the mesh.  This gets rid of skinny triangles and vertices with very high valence.</p>
+    <p>First, I find the average length of all the edges.  In a perfect uniform triangulation, all of the edges have the same length, so we want to bring the edge lengths towards the average.  I do this by splitting all the edges that are 4/3 the average length, and collapsing all the edges that are 4/5 the average length.  In order to preserve stability in the iteration (i.e. not removing and adding edges in the same iteration), I perform this in two passes over the mesh.  Then, in the next pass, I improve the valence of the mesh by flipping edges that reduce the total deviation of the mesh from valence 6.  Finally, I slide all of the vertices tangentially towards the centroid of their neighbors.</p>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                  <img src="images/cow0.png" width="480px" />
+                  <figcaption align="middle">Initial Cow Mesh</figcaption>
+                </td>
+                <td align="middle">
+                  <img src="images/cow1.png" width="480px"/>
+                  <figcaption align="middle">A much more uniform cow mesh</figcaption>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <h3>Interesting Bugs</h3>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                <img src="images/black_hole.png" width="480px" />
+                <figcaption align="middle">This was a bug in my quadric error simplification that caused the same edges to be collapsed over and over again, oversimplifying one part of the mesh and leaving the other alone.</figcaption>
+                <figcaption>This was caused by me multiplying a 4x4 matrix with a 3D vector.  The homogeneous coordinate was lost in the multiplication which resulted in a misweighting of edges in the queue.  I solved it by manually setting the homogeneous coordinate to 1.</figcaption>
+            </tr>
+        </table>
+    </div>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                <img src="images/disease.png" width="480px" />
+                <figcaption align="middle">This was a bug in my delaunay remeshing that caused the mesh to slowly disappear as I ran the remeshing algorithm multiple times.</figcaption>
+                <figcaption>This was caused by propagating a NaN vector in the vertex positions when trying to calculate the normal of three collinear points.  This situation is created during the edge-flipping stage, so I fixed the bug by not flipping an edge when it results in three collinear points.
+            </tr>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>
+
+
+
+
