@@ -2,36 +2,8 @@ h1 {
 	text-align: center;
 }
 
-td {
-	border: 1px solid black;
-	border-radius: 20px;
-	width: 33.3%;
-}
-
-/*td:hover {background-color: gray;}*/
-
-table {
-	text-align: center;
-	/*border-spacing: 100px 50px;*/
-	border-collapse: separate;
-	margin: auto;
-}
-
-table.two-column {
-	border-spacing: 100px 50px;
-}
-
-table.three-column {
-	border-spacing: 50px 50px;
-}
-
 p.subtitle {
 	text-align: center;
-}
-
-table a {
-	display: block;
-	text-decoration: none;
 }
 
 .icon1 {
@@ -57,4 +29,30 @@ table a {
 	margin: 20px auto;
 	text-align: center;
 	vertical-align: middle;
+}
+
+.icon2 {
+	width: 408px;
+	height: 325px;
+	border: 1px solid black;
+	float: left;
+	margin: 24px 24px;
+	border-radius: 20px;
+}
+
+.icon2#first {
+	margin-left: 48px;
+}
+
+.icon2 h2 {
+	text-align: center;
+	vertical-align: middle;
+}
+
+.icon1 img {
+	width: 100%;
+}
+
+.icon2 img {
+	width: 100%;
 }
