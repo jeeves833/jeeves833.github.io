@@ -6,12 +6,55 @@ td {
 	border: 1px solid black;
 	border-radius: 20px;
 	width: 33.3%;
-	/*padding: 100px;*/
 }
+
+/*td:hover {background-color: gray;}*/
 
 table {
 	text-align: center;
-	border-spacing: 100px 50px;
+	/*border-spacing: 100px 50px;*/
 	border-collapse: separate;
 	margin: auto;
+}
+
+table.two-column {
+	border-spacing: 100px 50px;
+}
+
+table.three-column {
+	border-spacing: 50px 50px;
+}
+
+p.subtitle {
+	text-align: center;
+}
+
+table a {
+	display: block;
+	text-decoration: none;
+}
+
+.icon1 {
+	width: 520px;
+	height: 520px;
+	border: 1px solid black;
+	margin: auto 50px;
+	float: left;
+	border-radius: 20px;
+	padding: 20px;
+	/*vertical-align: middle;*/
+}
+
+.icon1#first {
+	margin-left: 100px;
+}
+
+.icon1#last {
+	margin-right: 100px;
+}
+
+.icon1 h2 {
+	margin: 20px auto;
+	text-align: center;
+	vertical-align: middle;
 }
