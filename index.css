@@ -7,22 +7,22 @@ p.subtitle {
 }
 
 .icon1 {
-	width: 520px;
+	width: 36.5%;
 	height: 520px;
 	border: 1px solid black;
-	margin: auto 50px;
+	margin: auto 3.5%;
 	float: left;
 	border-radius: 20px;
-	padding: 20px;
+	padding: 1.4%;
 	/*vertical-align: middle;*/
 }
 
 .icon1#first {
-	margin-left: 100px;
+	margin-left: 7%;
 }
 
 .icon1#last {
-	margin-right: 100px;
+	margin-right: 7%;
 }
 
 .icon1 h2 {
