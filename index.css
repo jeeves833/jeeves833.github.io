@@ -56,3 +56,14 @@ p.subtitle {
 .icon2 img {
 	width: 100%;
 }
+
+#footnote {
+	float: left;
+	position: relative;
+	bottom: 0;
+	width: 100%;
+}
+
+#footnote p {
+	text-align: center;
+}
