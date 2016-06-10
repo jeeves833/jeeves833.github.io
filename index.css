@@ -32,16 +32,16 @@ p.subtitle {
 }
 
 .icon2 {
-	width: 408px;
+	width: 28.8%;
 	height: 325px;
 	border: 1px solid black;
 	float: left;
-	margin: 24px 24px;
+	margin: 1.7% 1.7%;
 	border-radius: 20px;
 }
 
 .icon2#first {
-	margin-left: 48px;
+	margin-left: 3.4%;
 }
 
 .icon2 h2 {
