@@ -10,23 +10,14 @@ p.subtitle {
 	width: 36.5%;
 	height: 520px;
 	border: 1px solid black;
-	margin: auto 3.5%;
+	margin: auto 0;
 	float: left;
 	border-radius: 20px;
-	padding: 1.4%;
+	/*padding: 1.4%;*/
 	/*vertical-align: middle;*/
 }
 
-.icon1#first {
-	margin-left: 7%;
-}
-
-.icon1#last {
-	margin-right: 7%;
-}
-
 .icon1 h2 {
-	margin: 20px auto;
 	text-align: center;
 	vertical-align: middle;
 }
@@ -36,7 +27,7 @@ p.subtitle {
 	height: 325px;
 	border: 1px solid black;
 	float: left;
-	margin: 1.7% 1.7%;
+	margin: 1.7% 0;
 	border-radius: 20px;
 }
 
