@@ -6,6 +6,22 @@ p.subtitle {
 	text-align: center;
 }
 
+.columns-1 .icon2 {
+	margin-left: 35.5%;
+}
+
+.columns-3 .icon2 {
+	margin-left: 3.3%;
+}
+
+.columns-2 .icon1 {
+	margin-left: 8.92%;
+}
+
+.columns-2 .icon2 {
+	margin-left: 14%;
+}
+
 .icon1 {
 	width: 36.5%;
 	height: 36.5%;
@@ -13,8 +29,6 @@ p.subtitle {
 	margin: auto 0;
 	float: left;
 	border-radius: 20px;
-	/*padding: 1.4%;*/
-	/*vertical-align: middle;*/
 }
 
 .icon1 h2 {
