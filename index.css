@@ -8,7 +8,7 @@ p.subtitle {
 
 .icon1 {
 	width: 36.5%;
-	height: 520px;
+	height: 36.5%;
 	border: 1px solid black;
 	margin: auto 0;
 	float: left;
@@ -29,10 +29,6 @@ p.subtitle {
 	float: left;
 	margin: 1.7% 0;
 	border-radius: 20px;
-}
-
-.icon2#first {
-	margin-left: 3.4%;
 }
 
 .icon2 h2 {

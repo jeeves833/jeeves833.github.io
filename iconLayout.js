@@ -1,19 +1,11 @@
 function changeHeight () {
-	var icons = document.getElementsByClassName('icon1');
-	for (var i = icons.length - 1; i >= 0; i--) {
-		var style = window.getComputedStyle(icons[i]);
-		icons[i].style.height = style.width;
-		var heading = icons[i].getElementsByTagName('h2')[0];
-		heading.style.fontSize = parseFloat(style.width) * .044;
-
-	};
-	var icons = document.getElementsByClassName('icon2');
-	for (var i = icons.length - 1; i >= 0; i--) {
-		var style = window.getComputedStyle(icons[i]);
-		icons[i].style.height = parseInt(style.width) * .79;
-		var heading = icons[i].getElementsByTagName('h2')[0];
-		heading.style.fontSize = parseFloat(style.width) * .056;
-	};
+	$(".icon").each(function() {
+		var icon = $(this);
+		console.log(icon.width());
+		icon.width(Math.floor(icon.data("width") * $("body").width()));
+		icon.height(Math.floor(icon.width() * icon.data("aspect")));
+		console.log(icon.children("h2").css("fontSize", icon.width() * icon.data("fontAspect")));
+	});
 }
 
 function setThreeColMargins () {
@@ -24,7 +16,7 @@ function setThreeColMargins () {
 		if (icons.length < 1) {
 			continue;
 		};
-		var marginSize = (fullWidth - 3 * (parseFloat(window.getComputedStyle(icons[0]).width) + 2))/4;
+		var marginSize = Math.floor((fullWidth - 3 * (parseFloat(window.getComputedStyle(icons[0]).width) + 2))/4);
 		for (var i = icons.length - 1; i >= 0; i--) {
 			icons[i].style.marginLeft = marginSize.toString() + "px";
 		};
@@ -68,4 +60,12 @@ function setLayout () {
 	setTwoColMargins();
 }
 
-setLayout();
+window.onresize = function () {
+	setLayout();
+}
+
+$(document).ready(function() {
+	$(".icon1").data("aspect", 1).data("fontAspect", .044).data("width", .365);
+	$(".icon2").data("aspect", .79).data("fontAspect", .056).data("width", .288);
+	setLayout();
+})
