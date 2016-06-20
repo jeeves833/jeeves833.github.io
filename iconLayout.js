@@ -40,14 +40,14 @@ $(document).ready(function() {
 			height: "+=50",
 			marginLeft: "-=25",
 			top: "-=25"
-		})
+		}, 200)
 	}, function() {
 		$(this).animate({
 			width: "-=50",
 			height: "-=50",
 			marginLeft: "+=25",
 			top: "+=25"
-		})
+		}, 200)
 	})
 	$(".icon2").hover(function() {
 		$(this).animate({
@@ -55,13 +55,13 @@ $(document).ready(function() {
 			height: "+=25",
 			marginLeft: "-=12.5",
 			top: "-=12.5"
-		})
+		}, 200)
 	}, function() {
 		$(this).animate({
 			width: "-=25",
 			height: "-=25",
 			marginLeft: "+=12.5",
 			top: "+=12.5"
-		})
+		}, 200)
 	})
 })
