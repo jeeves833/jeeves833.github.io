@@ -34,4 +34,34 @@ $(document).ready(function() {
 	$(".icon1").data("aspect", 1).data("fontAspect", .044).data("width", .365);
 	$(".icon2").data("aspect", .79).data("fontAspect", .056).data("width", .288);
 	setLayout();
+	$(".icon1").hover(function() {
+		$(this).animate({
+			width: "+=50",
+			height: "+=50",
+			marginLeft: "-=25",
+			top: "-=25"
+		})
+	}, function() {
+		$(this).animate({
+			width: "-=50",
+			height: "-=50",
+			marginLeft: "+=25",
+			top: "+=25"
+		})
+	})
+	$(".icon2").hover(function() {
+		$(this).animate({
+			width: "+=25",
+			height: "+=25",
+			marginLeft: "-=12.5",
+			top: "-=12.5"
+		})
+	}, function() {
+		$(this).animate({
+			width: "-=25",
+			height: "-=25",
+			marginLeft: "+=12.5",
+			top: "+=12.5"
+		})
+	})
 })

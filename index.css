@@ -2,12 +2,29 @@ h1 {
 	text-align: center;
 }
 
+.icon {
+	position: relative;
+}
+
 p.subtitle {
 	text-align: center;
 }
 
 .columns-1 .icon2 {
 	margin-left: 35.5%;
+}
+
+.columns-3 {
+	display: inline-block;
+	overflow: hidden;
+}
+
+.columns-2 {
+	display: inline-block;
+}
+
+.columns-1 {
+	display: inline-block;
 }
 
 .columns-3 .icon2 {
@@ -41,7 +58,7 @@ p.subtitle {
 	height: 325px;
 	border: 1px solid black;
 	float: left;
-	margin: 1.7% 0;
+	margin: 1.8% 0;
 	border-radius: 20px;
 }
 
