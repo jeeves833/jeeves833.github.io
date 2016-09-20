@@ -1,0 +1,23 @@
+.jumbotron#cover {
+	background-image: url(/img/pianoComp.jpg);
+	background-size: cover;
+	padding: 2% 4% 29% 7%;
+	/*min-height: 480px;*/
+	/*background-position: 0 10%;*/
+}
+
+.jumbotron h1, .jumbotron p {
+	text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+}
+
+.icon {
+	border-width: 1px;
+	border-style: groove;
+	border-radius: 5px;
+	border-color: white;
+}
+
+iframe {
+	width: 100%;
+	height: 90vh;
+}
