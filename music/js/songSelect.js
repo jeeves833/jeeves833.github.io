@@ -15,6 +15,7 @@ $.getJSON("data/videos.json", populateList);
 function songSelect() {
 		console.log("setting click")
 		$(".song-selector").click(function(event) {
+			window.scrollTo(0,0);
 			$(".hide-when-play").slideUp();
 			var i = $(this).attr('id');
 			// console.log($(this).attr('id'));
