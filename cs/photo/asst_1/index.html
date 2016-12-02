@@ -56,12 +56,210 @@
       </div>
     </nav>
     <div class="container">
+      <div class="page-header">
+        <h1>Image Alignment <small>CS194-26</small></h1>
+      </div>
+      <img src="img/melons_full.png" class="img-responsive center-block" width="75%">
+      <p>In the years 1909-1915 (long before the advent of color photography), Russian photographer Sergei Prokudin-Gorskii set about documenting his homeland using a brand new photography technique which produced three grayscale negatives, one for each RGB color channel.  His original intent was for these negatives to be projected simultaneously using a special kind of projector with red, green, and blue filters over the light which would reconstruct the full color image.  However, due to the soon-to-start revolution in Russia, this technology never came to pass.  Nevertheless, with the power of modern image editing software, the Library of Congress has reconstructed these images by hand-aligning the negatives and applying the color filters digitally.  In this project, I set about to automate the alignment.</p>
+      <p>The negatives start off in a single vertical strip, corresponding to blue, green, and red from top to bottom.  I divide the strip into three equal-sized squares to isolate the three negatives and align them from there.</p>
+      <h2>The General L2 Norm Algorithm</h2>
+      <p>The first alignment technique used is the L2 norm or Euclidean distance between two images.  Taking the L2 norm of two of the negatives gives a good measurement of how dissimilar the negatives are, so an alignment that minimizes the L2 norm should be the proper alignment.  Going off of this, the alignment approach is to measure the L2 norm at all possible alignments and pick the most similar one.  It turns out, this algorithm works very well!  Below all the images is the number of offset pixels for each negative.</p>
+      <div class="row">
+        <div class="col-md-4">
+          <img src="img/pyramid_result/result-cathedral.png" class="img-responsive img-rounded center-block">
+          <p class="text-center">Green: (1, -1); Red: (7, -1)</p>
+        </div>
+        <div class="col-md-4">
+          <img src="img/pyramid_result/result-monastery.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-4">
+          <img src="img/pyramid_result/result-nativity.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 col-md-offset-2">
+          <img src="img/pyramid_result/result-settlers.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-4">
+          <img src="img/pyramid_result/result-tobolsk.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <p>The astute computer scientist will notice that this algorithm will take an incredibly long time to run on large images.  This observation lead to the use image pyramids as a pretty dramatic speedup.  Image pyramids work by providing a rough starting point and bounds for alignment by recursively downscaling the images and aligning the downscaled images.  This speeds up the algorithm immensely because it's not checking every pixel in the image for the norm and allows alignment of larger images.</p>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/pyramid_result/result-bridge.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/pyramid_result/result-emir.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/pyramid_result/result-harvesters.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/pyramid_result/result-icon.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/pyramid_result/result-onion_church.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/pyramid_result/result-self_portrait.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/pyramid_result/result-three_generations.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/pyramid_result/result-train.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/pyramid_result/result-turkmen.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/pyramid_result/result-village.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <img src="img/pyramid_result/result-workshop.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <h2>Cropping</h2>
+      <p>Another small step taken during the above alignments is cropping the negatives.  Since the borders of the negatives are nearly solid black, running an edge detection filter over the negatives will result in a lot of zero-content around the edges.  I cropped off all of this zero-content in an attempt to improve the L2 norm matching.</p>
+      <h2>Edge Matching</h2>
+      <p>Speaking of edge detection filters, I also tried to align the negatives by using edge detectors.  Edges are a much better indicator of matching images in this case, because they are less perturbed by the differences between the negatives.  Instead of performing L2 norm alignment on the negatives themselves, I performed alignment on the results of an edge detection filter.  This, in many cases, performed much more successfully.</p>
+      <div class="row">
+        <div class="col-md-4">
+          <img src="img/edge_result/result-cathedral.png" class="img-responsive img-rounded center-block">
+          <p class="text-center">Green: (1, -1); Red: (7, -1)</p>
+        </div>
+        <div class="col-md-4">
+          <img src="img/edge_result/result-monastery.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-4">
+          <img src="img/edge_result/result-nativity.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 col-md-offset-2">
+          <img src="img/edge_result/result-settlers.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-4">
+          <img src="img/edge_result/result-tobolsk.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/edge_result/result-bridge.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/edge_result/result-emir.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/edge_result/result-harvesters.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/edge_result/result-icon.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/edge_result/result-onion_church.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/edge_result/result-self_portrait.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/edge_result/result-three_generations.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/edge_result/result-train.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/edge_result/result-turkmen.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/edge_result/result-village.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <img src="img/edge_result/result-workshop.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <h2>Observations About Failed Alignments</h2>
+      <p>It is worth noticing that the edge-detecting algorithm did a worse job at aligning "Bridge.tif" and "lady.tif" images. This is because the large spots of damage occuring on the edges of the images that my cropping did not get rid of. These areas of damage create a large difference in the edge profiles of the channels, causing the program to not find the exact alignment. Two other images of note that didn't align properly are "Emir.tif" and "village.tif". In Emir, it is clear that the green channel aligned properly over the blue, but the red is off. This is due to a lack of contrast in the background of the red channel which is present in both the green and blue channels. In the village, the alignment is off particularly in the green channel because of the amount of contrast it contains in the greenery. In both of these cases, higher contrast shows up very strongly in the edge profile, so if one channel has more contrast than another, even if they are aligned properly, they will show a significant difference when taking the L2 Norm of the edge profile.</p>
+      <h2>Final Examples</h2>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/edge_result/result-00137u.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/edge_result/result-00871u.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/edge_result/result-00938u.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/edge_result/result-00992u.png" class="img-responsive img-rounded center-block">
+          <p class="text-center"></p>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="container">
       <div class="row">
         <div class="md-col-12">
           <iframe class="report" src="source.html"></iframe>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

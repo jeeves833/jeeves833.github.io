@@ -55,7 +55,18 @@ a {
 	text-align: center;
 }
 
+imgcaption p{
+	text-align: center;
+}
+
 .selection-list {
 	overflow: scroll;
 	max-height: 563px;
+}
+
+// Class
+.center-block {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
