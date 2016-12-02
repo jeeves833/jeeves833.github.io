@@ -63,7 +63,7 @@
       <p>In the years 1909-1915 (long before the advent of color photography), Russian photographer Sergei Prokudin-Gorskii set about documenting his homeland using a brand new photography technique which produced three grayscale negatives, one for each RGB color channel.  His original intent was for these negatives to be projected simultaneously using a special kind of projector with red, green, and blue filters over the light which would reconstruct the full color image.  However, due to the soon-to-start revolution in Russia, this technology never came to pass.  Nevertheless, with the power of modern image editing software, the Library of Congress has reconstructed these images by hand-aligning the negatives and applying the color filters digitally.  In this project, I set about to automate the alignment.</p>
       <p>The negatives start off in a single vertical strip, corresponding to blue, green, and red from top to bottom.  I divide the strip into three equal-sized squares to isolate the three negatives and align them from there.</p>
       <h2>The General L2 Norm Algorithm</h2>
-      <p>The first alignment technique used is the L2 norm or Euclidean distance between two images.  Taking the L2 norm of two of the negatives gives a good measurement of how dissimilar the negatives are, so an alignment that minimizes the L2 norm should be the proper alignment.  Going off of this, the alignment approach is to measure the L2 norm at all possible alignments and pick the most similar one.  It turns out, this algorithm works very well!  Below all the images is the number of offset pixels for each negative.</p>
+      <p>The first alignment technique used is the L2 norm or Euclidean distance between two images.  Taking the L2 norm of two of the negatives gives a good measurement of how dissimilar the negatives are, so an alignment that minimizes the L2 norm should be the proper alignment.  Going off of this, the alignment approach is to measure the L2 norm at all possible alignments and pick the most similar one.  It turns out, this algorithm works very well!  Below all the images is the number of offset pixels in (row, column) for each negative.</p>
       <div class="row">
         <div class="col-md-4">
           <img src="img/pyramid_result/result-cathedral.png" class="img-responsive img-rounded center-block">
@@ -71,78 +71,78 @@
         </div>
         <div class="col-md-4">
           <img src="img/pyramid_result/result-monastery.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-6, 0); Red: (117, 1)</p>
         </div>
         <div class="col-md-4">
           <img src="img/pyramid_result/result-nativity.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-5, 1); Red: (7, 1)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-4 col-md-offset-2">
           <img src="img/pyramid_result/result-settlers.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (7, 0); Red: (14, -1)</p>
         </div>
         <div class="col-md-4">
           <img src="img/pyramid_result/result-tobolsk.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (3, 2); Red: (6, 3)</p>
         </div>
       </div>
       <p>The astute computer scientist will notice that this algorithm will take an incredibly long time to run on large images.  This observation lead to the use image pyramids as a pretty dramatic speedup.  Image pyramids work by providing a rough starting point and bounds for alignment by recursively downscaling the images and aligning the downscaled images.  This speeds up the algorithm immensely because it's not checking every pixel in the image for the norm and allows alignment of larger images.</p>
       <div class="row">
         <div class="col-md-6">
           <img src="img/pyramid_result/result-bridge.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (13, -7); Red: (68, 4)</p>
         </div>
         <div class="col-md-6">
           <img src="img/pyramid_result/result-emir.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-3, 7); Red: (129, 2661)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <img src="img/pyramid_result/result-harvesters.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (118, -3); Red: (120, 7)</p>
         </div>
         <div class="col-md-6">
           <img src="img/pyramid_result/result-icon.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (42, 15); Red: (89, 22)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <img src="img/pyramid_result/result-onion_church.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (52, 22); Red: (107, 1)</p>
         </div>
         <div class="col-md-6">
           <img src="img/pyramid_result/result-self_portrait.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (50, -2); Red: (131, -5)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <img src="img/pyramid_result/result-three_generations.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (52, 5); Red: (108, 7)</p>
         </div>
         <div class="col-md-6">
           <img src="img/pyramid_result/result-train.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (0, -6); Red: (107, 1)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <img src="img/pyramid_result/result-turkmen.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (57, 4); Red: (81, 0)</p>
         </div>
         <div class="col-md-6">
           <img src="img/pyramid_result/result-village.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (18, -7); Red: (281, -14)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6 col-md-offset-3">
           <img src="img/pyramid_result/result-workshop.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (53, -5); Red: (69, -16)</p>
         </div>
       </div>
       <h2>Cropping</h2>
@@ -152,81 +152,81 @@
       <div class="row">
         <div class="col-md-4">
           <img src="img/edge_result/result-cathedral.png" class="img-responsive img-rounded center-block">
-          <p class="text-center">Green: (1, -1); Red: (7, -1)</p>
+          <p class="text-center">Green: (1, 1); Red: (8, 3)</p>
         </div>
         <div class="col-md-4">
           <img src="img/edge_result/result-monastery.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-8, 7); Red: (-5, 1)</p>
         </div>
         <div class="col-md-4">
           <img src="img/edge_result/result-nativity.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-2, 1); Red: (2, -1)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-4 col-md-offset-2">
           <img src="img/edge_result/result-settlers.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-4, 0); Red: (3, -2)</p>
         </div>
         <div class="col-md-4">
           <img src="img/edge_result/result-tobolsk.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-1, 1); Red: (2, 0)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <img src="img/edge_result/result-bridge.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-117, 3); Red: (3033, -38)</p>
         </div>
         <div class="col-md-6">
           <img src="img/edge_result/result-emir.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-47, 49); Red: (13, 2251)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <img src="img/edge_result/result-harvesters.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-27, 35); Red: (78, 12)</p>
         </div>
         <div class="col-md-6">
           <img src="img/edge_result/result-icon.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-7, 41); Red: (42, 48)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <img src="img/edge_result/result-onion_church.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-68, 31); Red: (-13, 43)</p>
         </div>
         <div class="col-md-6">
           <img src="img/edge_result/result-self_portrait.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-51, 59); Red: (47, 71)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <img src="img/edge_result/result-three_generations.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-49, 27); Red: (14, 24)</p>
         </div>
         <div class="col-md-6">
           <img src="img/edge_result/result-train.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (1, -1); Red: (53, 1)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6">
           <img src="img/edge_result/result-turkmen.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-31, 37); Red: (27, 43)</p>
         </div>
         <div class="col-md-6">
           <img src="img/edge_result/result-village.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (94, 26); Red: (113, 55)</p>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6 col-md-offset-3">
           <img src="img/edge_result/result-workshop.png" class="img-responsive img-rounded center-block">
-          <p class="text-center"></p>
+          <p class="text-center">Green: (-19, 37); Red: (-1, 26)</p>
         </div>
       </div>
       <h2>Observations About Failed Alignments</h2>
