@@ -64,9 +64,43 @@ imgcaption p{
 	max-height: 563px;
 }
 
+p.subtitle {
+	color: grey;
+}
+
+.expander{
+	position: absolute;
+	bottom: 20%;
+	right: 10%;
+	color: grey;
+	text-align: right;
+}
+
 // Class
 .center-block {
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+@-webkit-keyframes openMenu /*--for webkit--*/{
+
+    from{
+        -webkit-transform:rotate(0deg);
+    }       
+    to{
+        -webkit-transform:rotate(-90deg);
+    }                       
+
+}
+
+@-webkit-keyframes closeMenu /*--for webkit--*/{
+
+    from{
+        -webkit-transform:rotate(-90deg);
+    }       
+    to{
+        -webkit-transform:rotate(0deg);
+    }                       
+
 }
