@@ -48,3 +48,35 @@ $(".expandable").hover(function() {
 });
 
 $(".menu").hide()
+
+// console.log($(window).height());
+
+function adjustHeights () {
+	var heightDiff = $(window).height() - $(".fullyVisible").height();
+	$(".fullyVisible").height($(window).height()).each(function() {
+		var rows = $(this).data("rows");
+		$("img", this).each(function() {
+			$(this).height($(window).height()/rows - 14*rows)
+		})
+	});
+}
+
+
+$(window).resize(/*function() {
+	var heightDiff = $(this).height() - $(".fullyVisible").height();
+	// var rows = $(".fullyVisible").data("rows");
+	// console.log(heightDiff);
+	// console.log($(".fullyVisible").data("rows"))
+	// console.log($(this).height());
+	// console.log(typeof($(this).height()));
+	$(".fullyVisible").height($(this).height()).each(function() {
+		var rows = $(this).data("rows");
+		$("img", this).each(function() {
+			// $(this).height($(this).height() + (heightDiff/rows))
+			$(this).height($(window).height()/rows - 28)
+		})
+	});
+	// console.log($(".fullyVisible").height());
+}*/adjustHeights)
+// $(".fullyVisible").css({"height": $(window).height().toString()});
+adjustHeights();

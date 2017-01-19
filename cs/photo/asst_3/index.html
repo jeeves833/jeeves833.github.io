@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="author" content="Lucas Karahadian">
-    <title>Frequency-Domain Editing</title>
+    <title>Fun with Frequencies</title>
 
     <!-- Bootstrap -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
@@ -56,16 +56,883 @@
       </div>
     </nav>
     <div class="container">
+      <div class="page-header">
+        <h1>Fun with Frequencies <small>CS194-26</small></h1>
+      </div>
+      <p>This project centers around manipulating images via their frequency spectrum.  The most common manipulation used here is the low-pass Gaussian filter, otherwise known as a Gaussian blur.  Passing an image through this filter removes high frequency content, like edges.  It is highly preferred among other low-pass filters because it doesn't leave any artifacts.  In this project, I will be using this Gaussian blur filter in creative ways to analyze images and achieve a variety of different visual effects from sharpening an image to blending two images together.</p>
+      <h2>Image Sharpening</h2>
+      <p>The key observation to make regarding image sharpening is that when subtracting a blurred image from the original, only the high-frequency details of the image remain.  Adding these details back to the original image makes them stand out a lot more.  This is the procedure I used in the following example.</p>
       <div class="row">
-        <div class="md-col-12">
-          <iframe class="report" src="source.html"></iframe>
+        <div class="col-md-6">
+          <img src="img/originalSpeed.jpg" class="img-responsive img-rounded center-block">
+          <p class="text-center">Original Image</p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/sharpSpeed.jpg" class="img-responsive img-rounded center-block">
+          <p class="text-center">Sharpened Image</p>
         </div>
       </div>
+      <p>Notice that the edges became much darker, and the highlights became much brighter than in the original image.</p>
+      <h2>Hybrid Images</h2>
+      <p>The premise of a hybrid image is that the image looks very different far away than it does close up.  This is because at long distances, our eyes naturally blur the images they send to the brain (which is why you can't read a book at 50 meters).  So combining the low frequency content of one image (blurring) with the high frequency content of another (the details), results in a picture that looks like one of two source images depending on how close or far away you are.  Below are the two source images I used and a graphical representation of this process.</p>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/clinton-3.jpg" class="img-responsive img-rounded center-block">
+        </div>
+        <div class="col-md-6">
+          <img src="img/Donald-Trump.jpg" class="img-responsive img-rounded center-block">
+        </div>
+      </div>
+      <p class="text-center">Source Images</p>
+      <p>The left image will be used for its high-frequency content, and the right image for its low-frequency content</p>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/clintonFiltered.jpg" class="img-responsive img-rounded center-block">
+        </div>
+        <div class="col-md-6">
+          <img src="img/trumpFiltered.jpg" class="img-responsive img-rounded center-block">
+        </div>
+      </div>
+      <p class="text-center">Sources post-fltering</p>
+      <p>A high-pass filter has been applied to the left image, and a low-pass filter applied to the right.  To increase the potency of the hybridization effect, the faces of both images have been manually aligned.</p>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/clintonFT.jpg" class="img-responsive img-rounded center-block">
+        </div>
+        <div class="col-md-6">
+          <img src="img/trumpFT.jpg" class="img-responsive img-rounded center-block">
+        </div>
+      </div>
+      <p class="text-center">2D Fourier Transform of the Filtered Images</p>
+      <p>Notice the results of the filtering: the left image has most of its information in the high-frequency zone, and the right image has most information in the low-frequency zone.</p>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/HillaryTrump.jpg" class="img-responsive img-rounded center-block">
+          <p class="text-center">The Hybrid Image</p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/combinedFT.jpg" class="img-responsive img-rounded center-block">
+          <p class="text-center">Fourier Transform of the Hybrid Image</p>
+        </div>
+      </div>
+      <p>The hybrid image is formed simply by superimposing the two filtered images and cropping the result.  Try it out!  Look at the image from a normal distance, then back away from it until it changes!  If you don't have room to back away, you can reproduce the effect by zooming out of the webpage or by taking off glasses if you're wearing them.</p>
+      <p>On the right, you can see the fourier transform of the hybrid, notice that, as expected, it contains the low-frequency content of one image and the high-frequency content of the other</p>
+      <h3>Additional Hybrids</h3>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/SuperstarSaga.jpg" width="50%" class="img-responsive img-rounded center-block">
+          <p class="text-center">When creating this hybrid, alignment took some time.  Since the structures of the faces are so different, I decided to align the one most prominent feature, the nose.</p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/JoshGarcia.jpg" width="69.5%" class="img-responsive img-rounded center-block">
+          <p class="text-center">The faces used in this hybrid were so different in shape that no alignment could make it look natural.  This example is presented as an interesting failure case.</p>
+        </div>
+      </div>
+      <!-- <div class="row"> 
+        <div class="col-md-6">
+          <img src="img/SuperstarSaga.jpg" width="50%" class="img-responsive img-rounded center-block">
+        </div>
+        <div class="col-md-6 vcenter clearfix visible-md-block visible-lg-block">
+          <p >When creating this hybrid, alignment took some time.  Since the structures of the faces are so different, I decided to align the one most prominent feature, the nose.</p>
+        </div>
+        <div class="col-md-6 clearfix visible-sm-block visible-xs-block">
+          <p >When creating this hybrid, alignment took some time.  Since the structures of the faces are so different, I decided to align the one most prominent feature, the nose.</p>
+        </div>
+      </div>
+      <div class="row"> 
+        <div class="col-md-6 vcenter clearfix visible-md-block visible-lg-block">
+          <p >The faces used in this hybrid were so different in shape that no alignment could make it look natural.  This example is presented as an interesting failure case.</p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/JoshGarcia.jpg" width="66%" class="img-responsive img-rounded center-block">
+        </div>
+        <div class="col-md-6 clearfix visible-sm-block visible-xs-block">
+          <p >The faces used in this hybrid were so different in shape that no alignment could make it look natural.  This example is presented as an interesting failure case.</p>
+        </div>
+      </div> -->
+      <h2>Gaussian and Laplacian Stacks</h2>
+      <p>A Gaussian stack is a series of images where each image is the result of applying a low-pass filter to the previous image.  In the frequency domiain, it can be viewed as a series of shrinking disks.  In layman's terms, it's a series of progressively blurrier images.  The utility of generating these Gaussian stacks is that it allows us to perform some operations (like the alignments <a href="/cs/photo/asst_1">here</a>) much faster.</p>
+      <p>If the Gaussian stack is a series of disks in frequency, then the Laplacian stack is a series of concentric rings.  They are the difference between consecutive items of the Gaussian stack and divide up the frequency space into bands.  Superimposing all the images in the Laplacian stack results in the original image.  This is useful if you want to perform nonlinear operations that are defined differently across different frequency bands.  In the following examples, I will notate items of the Gaussian stack as <var>G<sub>n</sub></var> and items of the Laplacian stack as <var>L<sub>n</sub></var>.</p>
+
+      <div id="beach-carousel" class="carousel slide fullyVisible" data-wrap="false" data-rows="2">
+        <!-- Indicators -->
+        <!-- <ol class="carousel-indicators">
+          <li data-target="#beach-carousel" data-slide-to="0" class="active"></li>
+          <li data-target="#beach-carousel" data-slide-to="1"></li>
+          <li data-target="#beach-carousel" data-slide-to="2"></li>
+          <li data-target="#beach-carousel" data-slide-to="3"></li>
+          <li data-target="#beach-carousel" data-slide-to="4"></li>
+          <li data-target="#beach-carousel" data-slide-to="5"></li>
+        </ol> -->
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+          <div class="item active">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/beachG1.jpg" height="388px" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>1</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/beachG2.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>2</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/beachL1.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>1</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/beachG2.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>2</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/beachG3.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>3</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/beachL2.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>2</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>2</sub></var> = <var>G<sub>3</sub></var> + <var>L<sub>2</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/beachG3.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>3</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/beachG4.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>4</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/beachL3.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>3</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>3</sub></var> = <var>G<sub>4</sub></var> + <var>L<sub>3</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/beachG4.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>4</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/beachG5.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>5</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/beachL4.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>4</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>4</sub></var> = <var>G<sub>5</sub></var> + <var>L<sub>4</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/beachG5.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>5</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/beachG6.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>6</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/beachL5.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>5</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>5</sub></var> = <var>G<sub>6</sub></var> + <var>L<sub>5</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/beachG6.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>6</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/beachG7.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>7</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/beachL6.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>6</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>6</sub></var> = <var>G<sub>7</sub></var> + <var>L<sub>6</sub></var>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#beach-carousel" role="button" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#beach-carousel" role="button" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+      <!-- <div class="stack">
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/beachG1.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>1</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/beachG2.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>2</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/beachL1.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>1</sub></var></p>
+            </div>
+          </div>
+        </div>
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/beachG2.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>2</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/beachG3.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>3</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>2</sub></var> = <var>G<sub>3</sub></var> + <var>L<sub>2</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/beachL2.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>2</sub></var></p>
+            </div>
+          </div>
+        </div>
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/beachG3.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>3</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/beachG4.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>4</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>3</sub></var> = <var>G<sub>4</sub></var> + <var>L<sub>3</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/beachL3.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>3</sub></var></p>
+            </div>
+          </div>
+        </div>
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/beachG4.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>4</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/beachG5.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>5</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>4</sub></var> = <var>G<sub>5</sub></var> + <var>L<sub>4</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/beachL4.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>4</sub></var></p>
+            </div>
+          </div>
+        </div>
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/beachG5.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>5</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/beachG6.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>6</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>5</sub></var> = <var>G<sub>6</sub></var> + <var>L<sub>5</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/beachL5.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>5</sub></var></p>
+            </div>
+          </div>
+        </div>
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/beachG6.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>6</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/beachG7.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>7</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>6</sub></var> = <var>G<sub>7</sub></var> + <var>L<sub>6</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/beachL6.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>6</sub></var></p>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <h3>Additional Stacks</h3>
+      <div id="nautilus-carousel" class="carousel slide fullyVisible" data-wrap="false" data-rows="2">
+        <!-- Indicators -->
+        <!-- <ol class="carousel-indicators">
+          <li data-target="#nautilus-carousel" data-slide-to="0" class="active"></li>
+          <li data-target="#nautilus-carousel" data-slide-to="1"></li>
+          <li data-target="#nautilus-carousel" data-slide-to="2"></li>
+          <li data-target="#nautilus-carousel" data-slide-to="3"></li>
+          <li data-target="#nautilus-carousel" data-slide-to="4"></li>
+          <li data-target="#nautilus-carousel" data-slide-to="5"></li>
+        </ol> -->
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+          <div class="item active">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/nautilusG1.jpg" height="388px" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>1</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/nautilusG2.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>2</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/nautilusL1.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>1</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/nautilusG2.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>2</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/nautilusG3.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>3</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/nautilusL2.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>2</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>2</sub></var> = <var>G<sub>3</sub></var> + <var>L<sub>2</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/nautilusG3.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>3</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/nautilusG4.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>4</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/nautilusL3.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>3</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>3</sub></var> = <var>G<sub>4</sub></var> + <var>L<sub>3</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/nautilusG4.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>4</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/nautilusG5.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>5</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/nautilusL4.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>4</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>4</sub></var> = <var>G<sub>5</sub></var> + <var>L<sub>4</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/nautilusG5.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>5</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/nautilusG6.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>6</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/nautilusL5.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>5</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>5</sub></var> = <var>G<sub>6</sub></var> + <var>L<sub>5</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/nautilusG6.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>6</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/nautilusG7.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>7</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/nautilusL6.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>6</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>6</sub></var> = <var>G<sub>7</sub></var> + <var>L<sub>6</sub></var>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#nautilus-carousel" role="button" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#nautilus-carousel" role="button" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+      <h4>Revisiting the Hybrid Image</h4>
+      <div id="hil-carousel" class="carousel slide fullyVisible" data-wrap="false" data-rows="2">
+        <!-- Indicators -->
+        <!-- <ol class="carousel-indicators">
+          <li data-target="#hil-carousel" data-slide-to="0" class="active"></li>
+          <li data-target="#hil-carousel" data-slide-to="1"></li>
+          <li data-target="#hil-carousel" data-slide-to="2"></li>
+          <li data-target="#hil-carousel" data-slide-to="3"></li>
+          <li data-target="#hil-carousel" data-slide-to="4"></li>
+          <li data-target="#hil-carousel" data-slide-to="5"></li>
+        </ol> -->
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+          <div class="item active">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/hilG1.jpg" height="388px" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>1</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/hilG2.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>2</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/hilL1.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>1</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/hilG2.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>2</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/hilG3.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>3</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/hilL2.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>2</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>2</sub></var> = <var>G<sub>3</sub></var> + <var>L<sub>2</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/hilG3.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>3</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/hilG4.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>4</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/hilL3.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>3</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>3</sub></var> = <var>G<sub>4</sub></var> + <var>L<sub>3</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/hilG4.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>4</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/hilG5.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>5</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/hilL4.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>4</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>4</sub></var> = <var>G<sub>5</sub></var> + <var>L<sub>4</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/hilG5.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>5</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/hilG6.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>6</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/hilL5.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>5</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>5</sub></var> = <var>G<sub>6</sub></var> + <var>L<sub>5</sub></var>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stackLayer">
+              <div class="row">
+                <div class="col-md-6">
+                  <img src="img/hilG6.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>6</sub></var></p>
+                </div>
+                <div class="col-md-6">
+                  <img src="img/hilG7.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>G<sub>7</sub></var></p>
+                </div>
+              </div>
+              <!-- <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p> -->
+              <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                  <img src="img/hilL6.jpg" class="img-responsive img-rounded center-block">
+                  <p class="text-center"><var>L<sub>6</sub></var></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-caption">
+              <var>G<sub>6</sub></var> = <var>G<sub>7</sub></var> + <var>L<sub>6</sub></var>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#hil-carousel" role="button" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#hil-carousel" role="button" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+      <!-- <div class="stack">
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-4">
+              <img src="img/nautilusG1.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>1</sub></var></p>
+            </div>
+            <div class="col-md-4">
+              <img src="img/nautilusG2.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>2</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>1</sub></var> = <var>G<sub>2</sub></var> + <var>L<sub>1</sub></var></p>
+          <div class="row">
+            <div class="col-md-4 col-md-offset-3">
+              <img src="img/nautilusL1.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>1</sub></var></p>
+            </div>
+          </div>
+        </div>
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/nautilusG2.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>2</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/nautilusG3.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>3</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>2</sub></var> = <var>G<sub>3</sub></var> + <var>L<sub>2</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/nautilusL2.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>2</sub></var></p>
+            </div>
+          </div>
+        </div>
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/nautilusG3.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>3</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/nautilusG4.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>4</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>3</sub></var> = <var>G<sub>4</sub></var> + <var>L<sub>3</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/nautilusL3.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>3</sub></var></p>
+            </div>
+          </div>
+        </div>
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/nautilusG4.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>4</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/nautilusG5.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>5</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>4</sub></var> = <var>G<sub>5</sub></var> + <var>L<sub>4</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/nautilusL4.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>4</sub></var></p>
+            </div>
+          </div>
+        </div>
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/nautilusG5.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>5</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/nautilusG6.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>6</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>5</sub></var> = <var>G<sub>6</sub></var> + <var>L<sub>5</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/nautilusL5.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>5</sub></var></p>
+            </div>
+          </div>
+        </div>
+        <div class="stackLayer">
+          <div class="row">
+            <div class="col-md-6">
+              <img src="img/nautilusG6.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>6</sub></var></p>
+            </div>
+            <div class="col-md-6">
+              <img src="img/nautilusG7.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>G<sub>7</sub></var></p>
+            </div>
+          </div>
+          <p class="text-center"><var>G<sub>6</sub></var> = <var>G<sub>7</sub></var> + <var>L<sub>6</sub></var></p>
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <img src="img/nautilusL6.jpg" class="img-responsive img-rounded center-block">
+              <p class="text-center"><var>L<sub>6</sub></var></p>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <p>Notice that dividing up the hybrid image into frequency bands allows us to see the individual components exclusively.  The higher bands contain one image and the lower bands contain the other.  This is especially visible looking at the difference between <var>L<sub>4</sub></var> and <var>L<sub>5</sub></var></p>
+      <h2>Multiresolution Blending</h2>
+      <p>Let's say you wanted to stitch two different images together (the left half is one image and the right half is another) in a way that looks natural.  You can't just superimpose the two halves together because that looks horribly unnatural.  Ideally you can cross-fade the two images together, but that causes issues when details bleed (ghost) across the seam in a way that doesn't look good.  What is one to do?  The solution is multiresolution blending.  By separating the image into frequency bands, and blending the images differently in each frequency band we avoid the ghosting issue while cross-fading the images as much as possible to make it look natural.</p>
+      <div class="row">
+        <div class="col-md-3">
+          <img src="img/normalMoon.jpg" class="img-responsive img-rounded center-block">
+        </div>
+        <div class="col-md-6">
+          <img src="img/moonParty.jpg" class="img-responsive img-rounded center-block">
+        </div>
+        <div class="col-md-3">
+          <img src="img/bloodMoon.jpg" class="img-responsive img-rounded center-block">
+        </div>
+      </div>
+      <h3>More Blends</h3>
+      <div class="row">
+        <div class="col-md-6">
+          <img src="img/StevenSpline.jpg" class="img-responsive img-rounded center-block">
+        </div>
+        <div class="col-md-6">
+          <img src="img/CantSeeColor.jpg" class="img-responsive img-rounded center-block">
+          <p class="text-center">This blend uses a cross-fading mask that is not just half-and-half.  It fades in an oblong shape around the mouth on the wall.</p>
+        </div>
+      </div>
+      <p>Of course there is some level of artistry to picking out pictures that blend well.  Ideally you get pictures that have similar shapes that can be blended together.  You can't just put pictures together at random and hope that it works out.</p>
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <img src="img/ohGodWhy.jpg" class="img-responsive img-rounded center-block">
+        </div>
+      </div>
+
+
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/main.js"></script>
   </body>
 </html>

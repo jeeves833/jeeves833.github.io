@@ -83,6 +83,12 @@ p.subtitle {
   margin-right: auto;
 }
 
+.vcenter {
+	position: relative;
+	top: 298px;
+	transform: translateY(-50%);
+}
+
 @-webkit-keyframes openMenu /*--for webkit--*/{
 
     from{
