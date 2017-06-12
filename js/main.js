@@ -11,7 +11,7 @@ var defaultFontSize;
 
 $(".expandable").hover(function() {
 	// console.log($(".expander .glyphicon", this).css("font-size"));
-	defaultFontSize = $(".expander .glyphicon", this).css("font-size");
+	var defaultFontSize = $(".expander .glyphicon", this).css("font-size");
 	$(".expander .glyphicon", this).animate({fontSize: "120%"}, 50);
 	}, function() {
 	$(".expander .glyphicon", this).animate({fontSize: defaultFontSize}, 50);

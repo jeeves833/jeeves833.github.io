@@ -1,7 +1,7 @@
 var songList;
 
 function populateList (json) {
-		songList = json;
+		var songList = json;
 		var l = $(".selection-list");
 		for (var i = 0; i < json.videos.length; i++) {
 			var songElement = $('<a class="list-group-item song-selector" id="' + json.videos[i].id + '">').append($('<h4>' +

@@ -1,3 +1,13 @@
+
+@font-face {
+    font-family: 'Hearthstone Numbers';
+    src: url('optibelwe-medium-webfont.woff2') format('woff2'),
+         url('optibelwe-medium-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 .jumbotron#cover {
 	background-image: url(/img/pianoCompResized.jpg);
 	background-size: cover;
@@ -51,6 +61,10 @@ a {
 	z-index: 0;
 }
 
+.testing {
+	font-family: "Hearthstone Numbers";
+}
+
 #playerContainer h1 {
 	text-align: center;
 }
@@ -87,6 +101,31 @@ p.subtitle {
 	position: relative;
 	top: 298px;
 	transform: translateY(-50%);
+}
+
+.centered {
+	margin: 0 auto;
+	text-align: center;
+	display: block;
+}
+
+.tooltipWrapper {
+	display: inline-block;
+	position: relative;
+	left: 25em;
+}
+
+.tooltipWrapper .btn[disabled] {
+	pointer-events: none;
+}
+
+.tooltipWrapper + .tooltip.top > .tooltip-inner {
+	background-color: red;
+	border: 2px solid DarkRed;
+}
+
+.tooltipWrapper + .tooltip.top > .tooltip-arrow {
+	border-top: 5px solid DarkRed;
 }
 
 @-webkit-keyframes openMenu /*--for webkit--*/{
