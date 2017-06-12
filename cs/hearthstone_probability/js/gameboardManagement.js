@@ -229,7 +229,8 @@ function Minion(health, board, id, index) {
 		name: 'minionKill' + parseInt(this.id),
 		groups: [this.id],
 		source: "img/killButton.png",
-		x: this.x, y: this.y-50
+		x: this.x, y: this.y-50,
+		width: 30, height: 30
 	}).addLayer({
 		type: 'text',
 		name: 'minionHealth' + parseInt(this.id),
