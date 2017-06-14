@@ -111,8 +111,35 @@ p.subtitle {
 
 .tooltipWrapper {
 	display: inline-block;
+}
+
+#minionTooltip {
 	position: relative;
 	left: 25em;
+}
+
+#launchButtonHolder {
+	display: inline-block;
+	position: relative;
+	/*left: 25em;*/
+	padding-bottom: 6px;
+}
+
+.counter {
+	display: inline-block;
+	position: relative;
+	/*left: 25em;*/
+	top: 1em;
+	width: 100px;
+}
+
+#launcher {
+	display: inline-block;
+	position: relative;
+	left: 25em;
+	border: 1px solid grey;
+	border-radius: 10px;
+	padding: 0 5px;
 }
 
 .tooltipWrapper .btn[disabled] {

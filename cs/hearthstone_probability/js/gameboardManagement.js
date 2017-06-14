@@ -1,4 +1,4 @@
-function Board(canvas, minionButton) {
+function Board(canvas, minionButton, launchButton) {
 	this.canvas = canvas;
 	this.width = canvas[0].width
 	this.hero = new Hero(30, this.canvas, 570, 150);
@@ -8,6 +8,7 @@ function Board(canvas, minionButton) {
 	this.gap = 20;
 	this.minionWidth = 102;
 	this.minionButton = minionButton;
+	this.launchButton = launchButton;
 	this.idAss = [];
 	for (var i = 0; i < 7; i++) {
 		this.idAss[i] = false;
@@ -111,6 +112,12 @@ function Board(canvas, minionButton) {
 	this.minionButton.click(function() {
 		myBoard.addMinion(1);
 	});
+
+	this.launchButton.click(function() {
+		// console.log($("#launchCounter > input").val());
+		var probs = myBoard.getProbability($("#launchCounter > input").val());
+		console.log(probs);
+	})
 
 	this.minionButton.hover(function() {
 		if (this.hasAttribute("disabled")) {
@@ -273,7 +280,7 @@ function update(context) {
 
 
 function main() {
-	myBoard = new Board($("canvas"), $("#minionButton"));
+	myBoard = new Board($("canvas"), $("#minionButton"), $("#launchButton"));
 	update(myBoard);
 	$('[data-toggle="tooltip"]').tooltip().tooltip('disable');
 }
