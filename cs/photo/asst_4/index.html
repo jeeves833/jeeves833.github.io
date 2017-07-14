@@ -56,11 +56,183 @@
       </div>
     </nav>
     <div class="container">
-      <div class="row">
+      <div class="page-header">
+        <h1>Seam Carving / Content Aware Scaling <small>CS194-26</small></h1>
+      </div>
+      <p>In this project we look at the art of seam carving.  That is, the finding of low-energy seams in an image.  For the purposes of this project, a low-energy seam is defined to be a 1 pixel wide path from one edge of the image to the opposing edge that minimizes the sum of the magnitude of x and y gradients along said path.</p>
+      <h2>Example</h2>
+      <div class="row vertical-center">
+        <!-- <div class="col-md-6">
+          <img src="img/house_by_jim_mccann.jpg" class="img-responsive img-rounded center-block">
+        </div> -->
+        <div class="col-md-6 col-md-offset-3">
+            <img src="img/houseSeam.jpg" class="img-responsive img-rounded center-block">
+            <p class="text-center">The red line highlights the lowest energy vertical seam</p>
+        </div>
+      </div>
+      <p>Low energy seams are calculated using the dynamic algorithm presented in <a href="http://www-inst.eecs.berkeley.edu/~cs194-26/fa15/hw/proj4-seamcarving/imret.pdf">this paper</a>.</p>
+      <h2>Content Aware Scaling</h2>
+      <p>One interesting application of seam carving is resizing images while minimizing distortion in high-information regions, otherwise known as content aware scaling.  Instead of evenly compressing the content of an image, content aware scaling reduces the size of images by repeatedly finding and deleting low-energy seams from the image until it has reached the desired size.  In this project I have implemented a simple 1-directional scaling (change either width or height, but not both).</p>
+      <div class="row vertical-center">
+        <div class="col-md-6">
+          <img src="img/houseH.jpg" class="img-responsive img-rounded center-block">
+          <p class="text-center">Scaling width by 50%</p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/houseV.jpg" class="img-responsive img-rounded center-block">
+          <p class="text-center">Scaling height by 50%</p>
+        </div>
+      </div>
+      <h2>More Examples</h2>
+      <p>In the following examples, I opted to resize a number of desktop wallpapers into squares.</p>
+      <div id="square-carousel" class="carousel slide fullyVisible" data-wrap="true" data-rows="1">
+        <div class="carousel-inner" role="listbox">
+          <div class="item active">
+            <div class="stacklayer">
+              <div class="row vertical-center">
+                <div class="col-md-6">
+                  <img src="img/chWoods.jpg" class="img-responsive img-rounded center-block">
+                </div>
+                <div class="col-md-6">
+                  <img src="img/chWoodsSquare.jpg" class="img-responsive img-rounded center-block">
+                </div>
+              </div>
+            </div> 
+          </div>
+          <div class="item">
+            <div class="stacklayer">
+              <div class="row vertical-center">
+                <div class="col-md-6">
+                  <img src="img/city.jpg" class="img-responsive img-rounded center-block">
+                </div>
+                <div class="col-md-6">
+                  <img src="img/citySquare.jpg" class="img-responsive img-rounded center-block">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stacklayer">
+              <div class="row vertical-center">
+                <div class="col-md-6">
+                  <img src="img/pandora.jpg" class="img-responsive img-rounded center-block">
+                </div>
+                <div class="col-md-6">
+                  <img src="img/pandoraSquare.jpg" class="img-responsive img-rounded center-block">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stacklayer">
+              <div class="row vertical-center">
+                <div class="col-md-6">
+                  <img src="img/piano.jpg" class="img-responsive img-rounded center-block">
+                </div>
+                <div class="col-md-6">
+                  <img src="img/pianoSquare.jpg" class="img-responsive img-rounded center-block">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stacklayer">
+              <div class="row vertical-center">
+                <div class="col-md-6">
+                  <img src="img/seagulls.jpg" class="img-responsive img-rounded center-block">
+                </div>
+                <div class="col-md-6">
+                  <img src="img/seagullsSquare.jpg" class="img-responsive img-rounded center-block">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stacklayer">
+              <div class="row vertical-center">
+                <div class="col-md-6">
+                  <img src="img/sky.jpg" class="img-responsive img-rounded center-block">
+                </div>
+                <div class="col-md-6">
+                  <img src="img/skySquare.jpg" class="img-responsive img-rounded center-block">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stacklayer">
+              <div class="row vertical-center">
+                <div class="col-md-6">
+                  <img src="img/sotc.jpg" class="img-responsive img-rounded center-block">
+                </div>
+                <div class="col-md-6">
+                  <img src="img/sotcSquare.jpg" class="img-responsive img-rounded center-block">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stacklayer">
+              <div class="row vertical-center">
+                <div class="col-md-6">
+                  <img src="img/portal.jpg" class="img-responsive img-rounded center-block">
+                </div>
+                <div class="col-md-6">
+                  <img src="img/portalSquare.jpg" class="img-responsive img-rounded center-block">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="stacklayer">
+              <div class="row vertical-center">
+                <div class="col-md-6">
+                  <img src="img/space.jpg" class="img-responsive img-rounded center-block">
+                </div>
+                <div class="col-md-6">
+                  <img src="img/spaceSquare.jpg" class="img-responsive img-rounded center-block">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a class="left carousel-control" href="#square-carousel" role="button" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#square-carousel" role="button" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="false"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+      <!-- <div class="row">
         <div class="md-col-12">
           <iframe class="report" src="source.html"></iframe>
         </div>
+      </div>-->
+      <h2>Effects of CAS on Faces</h2>
+      <p>Using content aware scaling to resize pictures of faces is an interesting case.  People tend to have a lot of low-information sections on their faces, such as the forehead and both cheeks.  This means that the scaling algorithm will tend to squash facial features together.  While this is an information preserving operation, the results tend to look very strange to us.  Our brains are very good at recognizing what is and isn't a face, so the minute changes made during CAS tend to place the result in an uncanny valley where it it still recognizable as a face, but also noticeably unreal.</p>
+      <div class="row vertical-center">
+        <div class="col-md-6">
+          <img src="img/self.jpg" class="img-responsive img-rounded center-block">
+        </div>
+        <div class="col-md-6">
+          <img src="img/selfSquare.jpg" class="img-responsive img-rounded center-block">
+          <p class="text-center">At low levels of rescaling, the distortions are only barely noticeable</p>
+        </div>
       </div>
+      <div class="row vertical-center">
+        <div class="col-md-6">
+          <img src="img/selfHeavyDistort.jpg" class="img-responsive img-rounded center-block">
+          <p class="text-center">As we downscale more and more</p>
+        </div>
+        <div class="col-md-6">
+          <img src="img/selfHeavyDistortSquare.jpg" class="img-responsive img-rounded center-block">
+          <p class="text-center">The distortion of the face becomes very apparent</p>
+        </div>
+      </div>
+      <h2>Final Thoughts</h2>
+      <p>Content aware scaling and seam carving are wonderful additions to the ever-increasing library of image editing tools.  In particular for images with large areas of blank space that don't contribute to perceptual structure these algorithms can drastically increase the image's efficiency at transferring information.  However, it is important to keep in mind the possible distortions this may cause and use appropriately.</p>
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
