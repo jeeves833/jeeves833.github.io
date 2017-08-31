@@ -1,6 +1,13 @@
 {
   "videos": [
     {
+      "id": "3iAdEJOiYAI",
+      "title": "A Moment's Rest",
+      "album": "Final Fantasy XII Piano Collections",
+      "date": "Aug 19, 2017",
+      "track": "4" 
+    },
+    {
       "id": "GiXOUwo3eRk",
       "title": "The Arcadian Empire",
       "album": "Final Fantasy XII Piano Collections",
@@ -12,7 +19,7 @@
       "title": "Eruyt Village",
       "album": "Final Fantasy XII Piano Collections",
       "date": "Jun 4, 2016",
-      "track": "4"
+      "track": "5"
     },
     {
       "id": "-cs4VyIe2qk",
